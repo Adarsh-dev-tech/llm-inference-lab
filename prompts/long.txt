@@ -1,0 +1,1 @@
+Provide a detailed technical comparison of quantization methods used in LLM inference, specifically comparing Q4_K_M, Q5_K_M, and Q8_0 formats. Discuss their impact on perplexity, VRAM usage, and generation speed on consumer GPUs, and give a recommendation for a 6 GB VRAM budget.
