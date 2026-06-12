@@ -1,0 +1,25 @@
+# Python compiler caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Editor / IDE configuration directories
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# GGUF models and large binaries
+*.gguf
+*.bin
+
+# Local benchmark logs and artifacts (keep codebase clean)
+results/json/*.json
+!results/json/README.md
