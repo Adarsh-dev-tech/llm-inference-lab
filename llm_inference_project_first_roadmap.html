@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Inference Project-First 6-Month Roadmap</title>
+  
+  <!-- Google Fonts: Outfit (headings), Inter (body), JetBrains Mono (code/numbers) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  
+  <style>
+    :root {
+      --color-bg-main: #060913;
+      --color-bg-card: rgba(13, 20, 38, 0.45);
+      --color-bg-card-hover: rgba(20, 30, 58, 0.65);
+      --color-bg-card-open: rgba(15, 23, 42, 0.85);
+      
+      --color-border-primary: rgba(99, 102, 241, 0.4);
+      --color-border-secondary: rgba(148, 163, 184, 0.15);
+      --color-border-tertiary: rgba(255, 255, 255, 0.05);
+      
+      --color-text-primary: #f8fafc;
+      --color-text-secondary: #94a3b8;
+      --color-text-tertiary: #64748b;
+      --color-text-info: #38bdf8;
+      
+      --border-radius-sm: 8px;
+      --border-radius-md: 12px;
+      --border-radius-lg: 20px;
+      
+      --font-family-body: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-family-title: 'Outfit', system-ui, -apple-system, sans-serif;
+      --font-family-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-bg-main);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(20, 184, 166, 0.08) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(244, 63, 94, 0.03) 0px, transparent 50%),
+        linear-gradient(rgba(255, 255, 255, 0.005) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.005) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+      color: var(--color-text-primary);
+      font-family: var(--font-family-body);
+      line-height: 1.6;
+      padding: 0;
+      margin: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    /* Header Section */
+    .header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+      position: relative;
+    }
+
+    .header::after {
+      content: "";
+      position: absolute;
+      bottom: -1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.5), transparent);
+    }
+
+    .header-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-family-mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      color: #a5b4fc;
+      padding: 6px 14px;
+      border-radius: 99px;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.05);
+    }
+
+    .header h1 {
+      font-family: var(--font-family-title);
+      font-size: 2.75rem;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff 40%, #c7d2fe 70%, #818cf8 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-subtitle {
+      font-size: 1.1rem;
+      color: var(--color-text-secondary);
+      max-width: 680px;
+      margin: 0 auto 2.5rem;
+      font-weight: 400;
+    }
+
+    /* Stats Overview */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 2.5rem;
+    }
+
+    @media (min-width: 580px) {
+      .overview-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .overview-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-md);
+      padding: 16px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .overview-card:hover {
+      border-color: rgba(99, 102, 241, 0.2);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .overview-val {
+      font-family: var(--font-family-title);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #818cf8;
+      margin-bottom: 4px;
+    }
+
+    .overview-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-text-tertiary);
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 3rem;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--color-border-tertiary);
+      color: var(--color-text-secondary);
+      padding: 10px 20px;
+      font-size: 12.5px;
+      font-weight: 500;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: var(--font-family-body);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: var(--color-text-primary);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+    }
+
+    .btn-primary:hover {
+      background: rgba(99, 102, 241, 0.25);
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+    }
+
+    /* Roadmap Month Headers */
+    .roadmap {
+      padding: 1rem 0;
+    }
+
+    .month-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 3.5rem 0 1.5rem;
+    }
+
+    .month-header:first-of-type {
+      margin-top: 0;
+    }
+
+    .month-label {
+      font-family: var(--font-family-title);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.18);
+      border-radius: var(--border-radius-md);
+      padding: 8px 16px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .month-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(99, 102, 241, 0.25), rgba(99, 102, 241, 0.02) 80%, transparent);
+    }
+
+    /* Week Cards */
+    .week-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 14px;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .week-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: transparent;
+      transition: background-color 0.3s;
+    }
+
+    .week-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      background: var(--color-bg-card-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    .week-card.open {
+      background: var(--color-bg-card-open);
+      border-color: var(--color-border-primary);
+      box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.6), 0 0 20px rgba(99, 102, 241, 0.08);
+    }
+
+    .week-card.open:hover {
+      border-color: var(--color-border-primary);
+    }
+
+    /* Tag Specific Left Borders */
+    .week-card:has(.tag-build)::before { background-color: #2dd4bf; }
+    .week-card:has(.tag-learn)::before { background-color: #a78bfa; }
+    .week-card:has(.tag-measure)::before { background-color: #fbbf24; }
+    .week-card:has(.tag-research)::before { background-color: #fb7185; }
+    .week-card:has(.tag-paper)::before { background-color: #f87171; }
+    .week-card:has(.tag-novel)::before { background-color: #a3e635; }
+
+    .week-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      user-select: none;
+    }
+
+    .week-num {
+      font-family: var(--font-family-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      padding: 3px 10px;
+      border-radius: var(--border-radius-sm);
+      min-width: 82px;
+      text-align: center;
+    }
+
+    .week-title {
+      font-family: var(--font-family-title);
+      font-size: 16.5px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      flex: 1;
+    }
+
+    .week-tag {
+      font-family: var(--font-family-mono);
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .chevron {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s, background 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--color-border-tertiary);
+    }
+
+    .week-card:hover .chevron {
+      color: var(--color-text-primary);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .week-card.open .chevron {
+      transform: rotate(180deg);
+      background: rgba(99, 102, 241, 0.18);
+      border-color: rgba(99, 102, 241, 0.35);
+      color: #a5b4fc;
+    }
+
+    /* Accordion Wrapper using CSS Grid */
+    .week-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .week-card.open .week-body {
+      grid-template-rows: 1fr;
+    }
+
+    .week-body-inner {
+      overflow: hidden;
+    }
+
+    .week-body-content {
+      padding-top: 1.25rem;
+      margin-top: 1.25rem;
+      border-top: 1px solid var(--color-border-tertiary);
+    }
+
+    /* Goal & Banners */
+    .week-goal {
+      font-size: 13.5px;
+      color: var(--color-text-secondary);
+      margin-bottom: 1.25rem;
+      line-height: 1.6;
+    }
+
+    .build-banner {
+      background: rgba(45, 212, 191, 0.04);
+      border-left: 4px solid #2dd4bf;
+      border-radius: var(--border-radius-sm);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 1.25rem;
+      line-height: 1.6;
+    }
+
+    .build-banner strong {
+      color: #2dd4bf;
+      font-weight: 600;
+    }
+
+    .wall-banner {
+      background: rgba(251, 191, 36, 0.04);
+      border-left: 4px solid #fbbf24;
+      border-radius: var(--border-radius-sm);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 1.25rem;
+      line-height: 1.6;
+    }
+
+    .wall-banner strong {
+      color: #fbbf24;
+      font-weight: 600;
+    }
+
+    /* Resource Section */
+    .res-section {
+      margin-bottom: 1.25rem;
+    }
+
+    .res-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .res-label {
+      font-family: var(--font-family-body);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-text-tertiary);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .res-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--color-border-tertiary);
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    .res-item:last-child {
+      border-bottom: none;
+    }
+
+    .res-icon {
+      font-size: 16px;
+      color: #a5b4fc;
+      margin-top: 2px;
+      flex-shrink: 0;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.18);
+      padding: 6px;
+      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .res-content {
+      flex: 1;
+    }
+
+    .res-name {
+      color: var(--color-text-primary);
+      font-weight: 600;
+    }
+
+    .res-desc {
+      color: var(--color-text-secondary);
+      font-size: 12.5px;
+      margin-top: 3px;
+    }
+
+    .res-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+      font-size: 11.5px;
+      color: var(--color-text-info);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .res-link:hover {
+      color: #58c7fa;
+      text-decoration: underline;
+    }
+
+    .res-link i {
+      font-size: 10px;
+    }
+
+    /* Tip Box */
+    .tip-box {
+      background: rgba(99, 102, 241, 0.05);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: var(--border-radius-md);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+      margin-top: 1.25rem;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .tip-box::before {
+      content: "💡";
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .tip-box strong {
+      color: var(--color-text-primary);
+      font-weight: 600;
+    }
+
+    /* Deliverable Box */
+    .deliverable-box {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: var(--border-radius-md);
+      padding: 14px 18px;
+      margin-top: 1.25rem;
+    }
+
+    .deliverable-label {
+      font-family: var(--font-family-body);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-text-tertiary);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .deliverable-item {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      padding: 5px 0;
+      line-height: 1.6;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .deliverable-item strong {
+      color: var(--color-text-primary);
+      font-weight: 600;
+    }
+
+    .deliverable-item::before {
+      content: "✓";
+      color: #2dd4bf;
+      font-weight: 700;
+      font-size: 13px;
+      flex-shrink: 0;
+      width: 14px;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 5rem;
+      color: var(--color-text-tertiary);
+      font-size: 12.5px;
+      border-top: 1px solid var(--color-border-tertiary);
+      padding-top: 2rem;
+    }
+
+    /* Tag Styling Details */
+    .tag-build {
+      background: rgba(45, 212, 191, 0.1);
+      color: #2dd4bf;
+      border: 1px solid rgba(45, 212, 191, 0.2);
+    }
+    .tag-learn {
+      background: rgba(167, 139, 250, 0.1);
+      color: #a78bfa;
+      border: 1px solid rgba(167, 139, 250, 0.2);
+    }
+    .tag-measure {
+      background: rgba(251, 191, 36, 0.1);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+    .tag-research {
+      background: rgba(251, 113, 133, 0.1);
+      color: #fb7185;
+      border: 1px solid rgba(251, 113, 133, 0.2);
+    }
+    .tag-paper {
+      background: rgba(248, 113, 113, 0.1);
+      color: #f87171;
+      border: 1px solid rgba(248, 113, 113, 0.2);
+    }
+    .tag-novel {
+      background: rgba(163, 230, 53, 0.1);
+      color: #a3e635;
+      border: 1px solid rgba(163, 230, 53, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header class="header">
+      <div class="header-tag"><i class="ti ti-cpu"></i> Engineering Curriculum</div>
+      <h1>LLM Inference Project-First Roadmap</h1>
+      <p class="header-subtitle">A 6-month hands-on roadmap focusing on building systems, hitting resource walls, and learning LLM inference optimization on consumer-grade GPUs.</p>
+      
+      <!-- Quick Dashboard Summary -->
+      <div class="overview-grid">
+        <div class="overview-card">
+          <div class="overview-val">6 Months</div>
+          <div class="overview-label">Duration</div>
+        </div>
+        <div class="overview-card">
+          <div class="overview-val">12 Weeks</div>
+          <div class="overview-label">Milestones</div>
+        </div>
+        <div class="overview-card">
+          <div class="overview-val">RTX 3050</div>
+          <div class="overview-label">Target Hardware</div>
+        </div>
+        <div class="overview-card">
+          <div class="overview-val">Project-First</div>
+          <div class="overview-label">Methodology</div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <button class="btn btn-primary" onclick="expandAll()"><i class="ti ti-fold-down"></i> Expand All</button>
+        <button class="btn" onclick="collapseAll()"><i class="ti ti-fold-up"></i> Collapse All</button>
+      </div>
+    </header>
+
+    <main class="roadmap">
+      
+      <!-- Month 1 -->
+      <div class="month-header">
+        <span class="month-label">Month 1 — Build the benchmark lab</span>
+        <div class="month-line"></div>
+      </div>
+      
+      <!-- Week 1-2 -->
+      <div class="week-card" onclick="toggle(this, event)">
+        <div class="week-top">
+          <span class="week-num">Week 1–2</span>
+          <span class="week-title">Set up llama.cpp + run your first model</span>
+          <span class="week-tag tag-build">build</span>
+          <span class="chevron"><i class="ti ti-chevron-down"></i></span>
+        </div>
+        <div class="week-body">
+          <div class="week-body-inner">
+            <div class="week-body-content">
+              <div class="build-banner"><strong>Project milestone:</strong> A working local inference setup. You can run a 7B model on your RTX 3050 6GB and see tokens generating on screen.</div>
+              <p class="week-goal">Goal: install llama.cpp from source, download a quantized model, run it, and watch nvidia-smi in a second terminal while it generates. Your first wall will appear here — something won't work. Fix it. That fixing process is the learning.</p>
+              
+              <div class="res-section">
+                <div class="res-label">What to install</div>
+                <div class="res-item">
+                  <i class="ti ti-terminal res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">llama.cpp — install from source with CUDA support</span>
+                    <div class="res-desc">Follow the CUDA build instructions exactly. The -ngl flag (number of GPU layers) is your first real decision — it controls how many layers offload to your 6GB VRAM vs system RAM. Start with -ngl 20 and observe.</div>
+                    <a class="res-link" href="https://github.com/ggerganov/llama.cpp" target="_blank">github.com/ggerganov/llama.cpp <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-download res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Qwen2.5-7B-Instruct Q4_K_M from Hugging Face</span>
+                    <div class="res-desc">Good starting model. Download the GGUF file directly. Q4_K_M fits comfortably in 6GB VRAM at -ngl 33 (all layers on GPU). This is your baseline model for the next 6 months.</div>
+                    <a class="res-link" href="https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF" target="_blank">huggingface.co <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-terminal res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Ollama — install alongside llama.cpp</span>
+                    <div class="res-desc">Use Ollama for quick model swapping during exploration. Use llama.cpp directly for anything you need to measure precisely — Ollama adds overhead you can't control.</div>
+                    <a class="res-link" href="https://ollama.com" target="_blank">ollama.com <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="res-section">
+                <div class="res-label">Walls you will hit + what to learn when you do</div>
+                <div class="res-item">
+                  <i class="ti ti-alert-triangle res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Wall: "what does -ngl actually do and why does changing it affect speed?"</span>
+                    <div class="res-desc">When you hit this → read Tim Dettmers' GPU blog post. Teaches VRAM vs RAM bandwidth difference. 20 minutes. Then come back and experiment with -ngl values.</div>
+                    <a class="res-link" href="https://timdettmers.com/2023/01/30/which-gpu-for-deep-learning/" target="_blank">timdettmers.com <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-alert-triangle res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Wall: "why is my 6GB GPU not faster than CPU for some operations?"</span>
+                    <div class="res-desc">When you hit this → read the JAX Scaling Book roofline chapter. Teaches memory-bound vs compute-bound. 30 minutes. This is the core hardware insight for all LLM optimization.</div>
+                    <a class="res-link" href="https://jax-ml.github.io/scaling-book/roofline/" target="_blank">jax-ml.github.io <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="deliverable-box">
+                <div class="deliverable-label">End of week deliverable</div>
+                <div class="deliverable-item"><strong>GitHub repo created:</strong> llm-inference-lab</div>
+                <div class="deliverable-item"><strong>README.md:</strong> documents your hardware spec (RTX 3050 6GB, 16GB RAM), baseline model choice, and why you chose it</div>
+                <div class="deliverable-item"><strong>First doc file:</strong> 01_hardware_setup.md — what you installed, what -ngl value you settled on, and why</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 3-4 -->
+      <div class="week-card" onclick="toggle(this, event)">
+        <div class="week-top">
+          <span class="week-num">Week 3–4</span>
+          <span class="week-title">Build the benchmark script</span>
+          <span class="week-tag tag-build">build</span>
+          <span class="chevron"><i class="ti ti-chevron-down"></i></span>
+        </div>
+        <div class="week-body">
+          <div class="week-body-inner">
+            <div class="week-body-content">
+              <div class="build-banner"><strong>Project milestone:</strong> A Python script that takes (model, quantization, prompt, n_gpu_layers) as inputs and outputs (tokens/sec, first-token latency, VRAM used, RAM used) as a structured log. This is the instrument you'll use for every experiment from here on.</div>
+              <p class="week-goal">Goal: build the benchmark lab. Run it across Q4_K_M, Q5_K_M, Q8_0, and F16 on the same model. Record every result. This is your first real dataset.</p>
+              
+              <div class="res-section">
+                <div class="res-label">Tools to use</div>
+                <div class="res-item">
+                  <i class="ti ti-brand-python res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">llama-cpp-python — Python bindings for llama.cpp</span>
+                    <div class="res-desc">Lets you control llama.cpp programmatically. Use Llama() class with verbose=True to capture per-token timing.</div>
+                    <a class="res-link" href="https://github.com/abetlen/llama-cpp-python" target="_blank">github.com/abetlen/llama-cpp-python <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-brand-python res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">psutil + GPUtil for system measurement</span>
+                    <div class="res-desc">psutil reads RAM usage. GPUtil reads VRAM usage. Call both before and after each generation. Log the delta.</div>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-file res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Output to CSV or JSON</span>
+                    <div class="res-desc">Every benchmark run appends one row: timestamp, model, quant, prompt_tokens, gen_tokens, tok_per_sec, latency_first_token_ms, vram_mb, ram_mb, n_gpu_layers. You'll thank yourself later.</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="res-section">
+                <div class="res-label">Walls you will hit + what to learn when you do</div>
+                <div class="res-item">
+                  <i class="ti ti-alert-triangle res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Wall: "why does Q4 vs Q8 affect speed, what is actually different?"</span>
+                    <div class="res-desc">When you hit this → read the GGUF format README and Tim Dettmers' 8-bit quantization post. 40 minutes. You'll understand what Q4_K_M is actually doing to the weights. Then re-run your benchmark and the numbers will make sense.</div>
+                    <a class="res-link" href="https://github.com/ggerganov/ggml/blob/master/docs/gguf.md" target="_blank">github.com/ggerganov/ggml <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-alert-triangle res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Wall: "what is tokens/sec actually measuring and why does prompt length affect it?"</span>
+                    <div class="res-desc">When you hit this → watch 3Blue1Brown Linear Algebra chapters 1–5. The answer is matrix multiplication cost scaling with sequence length. 2 hours. Come back and your benchmark numbers will have a new layer of meaning.</div>
+                    <a class="res-link" href="https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab" target="_blank">youtube.com/3b1b <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="deliverable-box">
+                <div class="deliverable-label">End of week deliverable</div>
+                <div class="deliverable-item"><strong>benchmark.py:</strong> working script, committed to repo</div>
+                <div class="deliverable-item"><strong>results/baseline.csv:</strong> Q4 vs Q5 vs Q8 comparison across 3 prompt lengths (short/medium/long)</div>
+                <div class="deliverable-item"><strong>02_quantization_benchmark.md:</strong> your findings documented with decision rationale — "why Q4_K_M is the working default on RTX 3050 6GB" with your own measured numbers as evidence</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Month 2 -->
+      <div class="month-header">
+        <span class="month-label">Month 2 — Understand what you built + go deeper</span>
+        <div class="month-line"></div>
+      </div>
+
+      <!-- Week 5-6 -->
+      <div class="week-card" onclick="toggle(this, event)">
+        <div class="week-top">
+          <span class="week-num">Week 5–6</span>
+          <span class="week-title">Build a tiny GPT + understand what's running on your machine</span>
+          <span class="week-tag tag-learn">learn</span>
+          <span class="chevron"><i class="ti ti-chevron-down"></i></span>
+        </div>
+        <div class="week-body">
+          <div class="week-body-inner">
+            <div class="week-body-content">
+              <div class="wall-banner"><strong>Why now:</strong> You've been running a model for a month and hitting walls you can't fully explain. This week you build the thing from scratch so every operation you've been measuring has a concrete code-level anchor.</div>
+              <p class="week-goal">Goal: build a tiny GPT by hand following Karpathy's video. Understand every tensor shape. Then open your benchmark results and re-read every number with the new mental model.</p>
+              
+              <div class="res-section">
+                <div class="res-label">Primary — do in this order</div>
+                <div class="res-item">
+                  <i class="ti ti-brand-youtube res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Karpathy — "The spelled-out intro to neural nets: building micrograd"</span>
+                    <div class="res-desc">Watch first. 2.5 hours, code along. Builds backpropagation from scratch. You need this before the GPT video or the attention mechanism won't make sense.</div>
+                    <a class="res-link" href="https://www.youtube.com/watch?v=VMj-3S1tku0" target="_blank">youtube.com <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-brand-youtube res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Karpathy — "Let's build GPT: from scratch, in code, spelled out"</span>
+                    <div class="res-desc">The most important single resource on this roadmap. Code along. Pause constantly. Every tensor shape you understand here maps directly to the model running in your benchmark lab.</div>
+                    <a class="res-link" href="https://www.youtube.com/watch?v=kCc8FmEb1nY" target="_blank">youtube.com <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="res-section">
+                <div class="res-label">Companion reading (open alongside video)</div>
+                <div class="res-item">
+                  <i class="ti ti-article res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Jay Alammar — "The Illustrated Transformer"</span>
+                    <div class="res-desc">When something in Karpathy's code confuses you, look at Alammar's diagrams. Best visual reference for what each component is doing geometrically.</div>
+                    <a class="res-link" href="https://jalammar.github.io/illustrated-transformer/" target="_blank">jalammar.github.io <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="res-section">
+                <div class="res-label">Walls you will hit + what to learn when you do</div>
+                <div class="res-item">
+                  <i class="ti ti-alert-triangle res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Wall: "what is the attention matrix actually computing and why Q × Kᵀ?"</span>
+                    <div class="res-desc">When you hit this → read Lilian Weng's "Attention? Attention!" sections 1–3. 45 minutes. The dot product as similarity measure is linear algebra you already know from Month 1's wall.</div>
+                    <a class="res-link" href="https://lilianweng.github.io/posts/2018-06-24-attention/" target="_blank">lilianweng.github.io <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-alert-triangle res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Wall: "why does attention scale as O(n²) and why does that matter for inference speed?"</span>
+                    <div class="res-desc">When you hit this → this is your first direct bridge back to your benchmark lab. Run your benchmark with prompt lengths 128, 512, 1024, 2048 and plot the latency. The O(n²) curve will appear in your own data.</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="deliverable-box">
+                <div class="deliverable-label">End of week deliverable</div>
+                <div class="deliverable-item"><strong>03_transformer_internals.md:</strong> explain in your own words — what is attention, what is the KV cache, why does context length hurt performance. Documented with your benchmark data showing the O(n²) effect.</div>
+                <div class="deliverable-item"><strong>tiny_gpt/:</strong> your Karpathy implementation, committed to repo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 7-8 -->
+      <div class="week-card" onclick="toggle(this, event)">
+        <div class="week-top">
+          <span class="week-num">Week 7–8</span>
+          <span class="week-title">Build a KV cache memory profiler</span>
+          <span class="week-tag tag-build">build</span>
+          <span class="chevron"><i class="ti ti-chevron-down"></i></span>
+        </div>
+        <div class="week-body">
+          <div class="week-body-inner">
+            <div class="week-body-content">
+              <div class="build-banner"><strong>Project milestone:</strong> A tool that visualizes KV cache memory growth as context length increases on your specific hardware. This is original work — it targets the 6GB VRAM constraint specifically and produces data nobody else has published for this exact configuration.</div>
+              <p class="week-goal">Goal: extend your benchmark script to track KV cache memory consumption at context lengths 128, 256, 512, 1024, 2048, 4096. Plot the growth curve. Answer: at what context length does your 6GB VRAM run out of KV cache headroom?</p>
+              
+              <div class="res-section">
+                <div class="res-label">What to learn when you hit walls here</div>
+                <div class="res-item">
+                  <i class="ti ti-alert-triangle res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Wall: "what exactly is stored in the KV cache and how do I calculate its size?"</span>
+                    <div class="res-desc">When you hit this → read Lilian Weng's inference optimization post. The KV cache memory formula is: 2 × n_layers × n_heads × head_dim × context_length × bytes_per_element. Work through this formula with your model's actual parameters. It's just arithmetic once you know the shape.</div>
+                    <a class="res-link" href="https://lilianweng.github.io/posts/2023-01-10-inference-optimization/" target="_blank">lilianweng.github.io <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="deliverable-box">
+                <div class="deliverable-label">End of week deliverable</div>
+                <div class="deliverable-item"><strong>kv_cache_profiler.py:</strong> committed to repo</div>
+                <div class="deliverable-item"><strong>results/kv_cache_growth.csv:</strong> memory measurements at each context length</div>
+                <div class="deliverable-item"><strong>04_kv_cache_analysis.md:</strong> your findings — "at what context length does KV cache become the bottleneck on 6GB VRAM, and what does that mean for real use cases?" This doc has original measured data. Nobody else has this exact chart for RTX 3050 6GB.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Month 3 -->
+      <div class="month-header">
+        <span class="month-label">Month 3 — Read and implement one paper</span>
+        <div class="month-line"></div>
+      </div>
+
+      <!-- Week 9 -->
+      <div class="week-card" onclick="toggle(this, event)">
+        <div class="week-top">
+          <span class="week-num">Week 9</span>
+          <span class="week-title">Learn how to read a paper + read FlashAttention</span>
+          <span class="week-tag tag-paper">paper</span>
+          <span class="chevron"><i class="ti ti-chevron-down"></i></span>
+        </div>
+        <div class="week-body">
+          <div class="week-body-inner">
+            <div class="week-body-content">
+              <div class="wall-banner"><strong>Why now:</strong> Your KV cache profiler showed you exactly where memory is being wasted. FlashAttention is the most important optimization that addresses memory-bound attention. You now have the context to understand why it matters.</div>
+              <p class="week-goal">Goal: learn the three-pass paper reading method, apply it to FlashAttention, and understand why tiling fixes the memory problem your profiler revealed.</p>
+              
+              <div class="res-section">
+                <div class="res-label">Read in this order</div>
+                <div class="res-item">
+                  <i class="ti ti-file-text res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">S. Keshav — "How to Read a Paper" (3-page PDF)</span>
+                    <div class="res-desc">Read this first, takes 15 minutes. Pass 1 = title/abstract/headings/conclusion. Pass 2 = figures and main content. Pass 3 = deep read. Use this method for every paper from now on.</div>
+                    <a class="res-link" href="http://ccr.sigcomm.org/online/files/p83-keshavA.pdf" target="_blank">sigcomm.org <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-article res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">ELI5 FlashAttention — Aleksa Gordić on Medium</span>
+                    <div class="res-desc">Read this before the paper. Explains tiling and SRAM vs HBM in plain English. After reading, the paper's Section 3 will make sense on first pass.</div>
+                    <a class="res-link" href="https://gordicaleksa.medium.com/eli5-flash-attention-5c44017022ad" target="_blank">medium.com <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-file-text res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">FlashAttention paper — Dao et al. 2022</span>
+                    <div class="res-desc">Pass 1 + Pass 2 only. Focus on Section 2 (background — this connects directly to your roofline wall from Week 1) and Section 3 (algorithm). Skip CUDA kernel implementation.</div>
+                    <a class="res-link" href="https://arxiv.org/abs/2205.14135" target="_blank">arxiv.org/abs/2205.14135 <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="deliverable-box">
+                <div class="deliverable-label">End of week deliverable</div>
+                <div class="deliverable-item"><strong>05_flashattention_notes.md:</strong> your paper notes in the decision rationale format — what problem it solves, what the core insight is, what it trades off, what breaks if you remove it. Interview questions at the end.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 10-12 -->
+      <div class="week-card" onclick="toggle(this, event)">
+        <div class="week-top">
+          <span class="week-num">Week 10–12</span>
+          <span class="week-title">Implement SnapKV and benchmark it</span>
+          <span class="week-tag tag-paper">implement</span>
+          <span class="chevron"><i class="ti ti-chevron-down"></i></span>
+        </div>
+        <div class="week-body">
+          <div class="week-body-inner">
+            <div class="week-body-content">
+              <div class="build-banner"><strong>Project milestone:</strong> A working implementation of SnapKV — KV cache compression by dropping unimportant keys — benchmarked against your baseline using your Week 3–4 benchmark lab. This is Project #1.</div>
+              <p class="week-goal">Goal: implement SnapKV as a hook on top of your model, run your benchmark on original vs SnapKV, measure the tradeoff between KV cache memory saved and output quality lost. Three weeks because implementation always takes longer than expected.</p>
+              
+              <div class="res-section">
+                <div class="res-label">Paper + implementation reference</div>
+                <div class="res-item">
+                  <i class="ti ti-file-text res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">SnapKV paper — Li et al. 2024</span>
+                    <div class="res-desc">Pass 1 + 2 first. The core idea is simple: cluster keys by attention score, keep only the top-K most attended positions. Section 3 is the implementation spec.</div>
+                    <a class="res-link" href="https://arxiv.org/abs/2404.14469" target="_blank">arxiv.org/abs/2404.14469 <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-brand-github res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">SnapKV reference implementation on GitHub</span>
+                    <div class="res-desc">Read the reference code after reading the paper — not before. Understand the algorithm first, then see how it was implemented. Search "SnapKV implementation github".</div>
+                    <a class="res-link" href="https://github.com/FasterDecoding/SnapKV" target="_blank">github.com/FasterDecoding/SnapKV <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="res-section">
+                <div class="res-label">Quality measurement tools</div>
+                <div class="res-item">
+                  <i class="ti ti-flask res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">llama.cpp perplexity tool (built in)</span>
+                    <div class="res-desc">Run: ./perplexity -m model.gguf -f wikitext-2-raw/wiki.test.raw. Lower = better. Compare baseline vs SnapKV. This is your quality metric.</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="res-section">
+                <div class="res-label">Walls you will hit + what to learn when you do</div>
+                <div class="res-item">
+                  <i class="ti ti-alert-triangle res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Wall: "how do I hook into the attention layer to intercept the KV cache?"</span>
+                    <div class="res-desc">When you hit this → read the Hugging Face transformers source for the attention module. The generate() function has a past_key_values argument that is the KV cache. Modifying it is where your implementation lives.</div>
+                    <a class="res-link" href="https://huggingface.co/docs/transformers/internal/generation_utils" target="_blank">huggingface.co/docs <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-alert-triangle res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Wall: "my perplexity is much worse than the paper reports — why?"</span>
+                    <div class="res-desc">When you hit this → check your K value (how many keys you're keeping). The paper uses task-specific tuning. On your hardware, sweep K from 16 to 256 and plot perplexity vs memory saved. That sweep IS your research contribution — the paper didn't do it on 6GB VRAM.</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="deliverable-box">
+                <div class="deliverable-label">End of week deliverable — Project #1 complete</div>
+                <div class="deliverable-item"><strong>snapkv/:</strong> implementation committed to repo</div>
+                <div class="deliverable-item"><strong>results/snapkv_benchmark.csv:</strong> memory saved vs perplexity delta at K=16, 32, 64, 128, 256</div>
+                <div class="deliverable-item"><strong>06_snapkv_implementation.md:</strong> full decision rationale doc — what you implemented, why SnapKV specifically, what the K sweep showed on RTX 3050 6GB, what the optimal K value is for your hardware, what breaks if K is too low or too high. Interview questions at the end.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Month 4 -->
+      <div class="month-header">
+        <span class="month-label">Month 4 — Read the other key papers + deepen the lab</span>
+        <div class="month-line"></div>
+      </div>
+
+      <!-- Week 13-14 -->
+      <div class="week-card" onclick="toggle(this, event)">
+        <div class="week-top">
+          <span class="week-num">Week 13–14</span>
+          <span class="week-title">Read PagedAttention + speculative decoding</span>
+          <span class="week-tag tag-paper">papers</span>
+          <span class="chevron"><i class="ti ti-chevron-down"></i></span>
+        </div>
+        <div class="week-body">
+          <div class="week-body-inner">
+            <div class="week-body-content">
+              <div class="wall-banner"><strong>Why now:</strong> Your SnapKV implementation gave you deep KV cache understanding. PagedAttention and speculative decoding are the two other foundational optimizations. Reading them now — after implementation experience — means you'll understand the tradeoffs at a level you couldn't have before Month 3.</div>
+              <p class="week-goal">Goal: read both papers using the three-pass method. Understand the core insight of each. Crucially — identify what each paper's approach costs on consumer hardware specifically, not just at datacenter scale.</p>
+              
+              <div class="res-section">
+                <div class="res-label">PagedAttention</div>
+                <div class="res-item">
+                  <i class="ti ti-article res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">vLLM blog post first, then the paper</span>
+                    <div class="res-desc">Blog explains the memory fragmentation problem visually. Paper Section 3 (Figure 2) is the core insight. Focus on why this matters for your 6GB VRAM — fragmentation wastes headroom you can't afford.</div>
+                    <a class="res-link" href="https://blog.vllm.ai/2023/06/20/vllm.html" target="_blank">blog.vllm.ai <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="res-section">
+                <div class="res-label">Speculative decoding</div>
+                <div class="res-item">
+                  <i class="ti ti-article res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Lilian Weng inference optimization post (speculative decoding section)</span>
+                    <div class="res-desc">More accessible than the original paper. Read this first. Key question to answer: why does speculative decoding require a second draft model, and why is that a problem on 6GB VRAM specifically?</div>
+                    <a class="res-link" href="https://lilianweng.github.io/posts/2023-01-10-inference-optimization/" target="_blank">lilianweng.github.io <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-file-text res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Speculative Decoding paper — Leviathan et al. 2023</span>
+                    <div class="res-desc">Pass 1 + 2. Section 2.1 algorithm and the acceptance criterion in Theorem 1 are the core. The draft model memory cost is your hardware-specific insight — a second model doesn't fit in 6GB alongside your primary model.</div>
+                    <a class="res-link" href="https://arxiv.org/abs/2211.17192" target="_blank">arxiv.org/abs/2211.17192 <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="deliverable-box">
+                <div class="deliverable-label">End of week deliverable</div>
+                <div class="deliverable-item"><strong>07_pagedattention_notes.md and 08_speculative_decoding_notes.md:</strong> same decision rationale format as your other docs. For each: what problem it solves, core insight, hardware-specific tradeoff on 6GB VRAM, interview questions.</div>
+                <div class="deliverable-item"><strong>Key insight to document:</strong> speculative decoding requires a draft model that competes for your 6GB VRAM. This constraint is what makes the 6GB consumer hardware problem different from datacenter inference. That gap is where your novel idea will come from.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 15-16 -->
+      <div class="week-card" onclick="toggle(this, event)">
+        <div class="week-top">
+          <span class="week-num">Week 15–16</span>
+          <span class="week-title">Read llama.cpp source code + extend the benchmark lab</span>
+          <span class="week-tag tag-build">build</span>
+          <span class="chevron"><i class="ti ti-chevron-down"></i></span>
+        </div>
+        <div class="week-body">
+          <div class="week-body-inner">
+            <div class="week-body-content">
+              <div class="build-banner"><strong>Project milestone:</strong> Extend your benchmark lab to test context length vs throughput tradeoffs, and add a speculative decoding comparison using llama.cpp's built-in support for it.</div>
+              <p class="week-goal">Goal: read the llama.cpp inference loop and KV cache implementation. Understand exactly how the tool you've been using for 4 months works internally. Then add speculative decoding benchmarks to your lab — llama.cpp supports it natively with -md (draft model) flag.</p>
+              
+              <div class="res-section">
+                <div class="res-label">Where to start in llama.cpp source</div>
+                <div class="res-item">
+                  <i class="ti ti-brand-github res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Start with the sampling loop in llama.cpp, then trace kv_cache references</span>
+                    <div class="res-desc">Read the token generation loop first — it's simpler than the full model. Then use GitHub search for "kv_cache" to find every place it's managed. The PR comments on key commits are more educational than the code itself.</div>
+                    <a class="res-link" href="https://github.com/ggerganov/llama.cpp" target="_blank">github.com/ggerganov/llama.cpp <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="res-section">
+                <div class="res-label">Speculative decoding experiment</div>
+                <div class="res-item">
+                  <i class="ti ti-flask res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Run llama.cpp speculative decoding with a tiny draft model</span>
+                    <div class="res-desc">Use a 1B model (e.g. Qwen2.5-1B) as draft, 7B as target. The 1B + 7B together need to fit in your 6GB VRAM — they won't at full precision, but Q2 + Q4 might. Measure whether speculative decoding actually helps on your hardware. The result — whatever it is — belongs in your documentation.</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="deliverable-box">
+                <div class="deliverable-label">End of week deliverable</div>
+                <div class="deliverable-item"><strong>results/speculative_decoding_benchmark.csv:</strong> tokens/sec and quality comparison with and without speculative decoding on your hardware</div>
+                <div class="deliverable-item"><strong>09_speculative_decoding_on_6gb_vram.md:</strong> your original finding — does speculative decoding help or hurt on 6GB VRAM? Why? This is a genuinely useful data point for r/LocalLLaMA that doesn't exist in published literature.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Month 5 -->
+      <div class="month-header">
+        <span class="month-label">Month 5 — Find and prototype your novel idea</span>
+        <div class="month-line"></div>
+      </div>
+
+      <!-- Week 17-18 -->
+      <div class="week-card" onclick="toggle(this, event)">
+        <div class="week-top">
+          <span class="week-num">Week 17–18</span>
+          <span class="week-title">Idea journal + identify your research question</span>
+          <span class="week-tag tag-research">research</span>
+          <span class="chevron"><i class="ti ti-chevron-down"></i></span>
+        </div>
+        <div class="week-body">
+          <div class="week-body-inner">
+            <div class="week-body-content">
+              <div class="wall-banner"><strong>Your data will give you the idea.</strong> By now you have 4 months of benchmark results, a SnapKV implementation, and a speculative decoding experiment that revealed something about 6GB VRAM specifically. The novel idea comes from the frustration in that data, not from brainstorming.</div>
+              <p class="week-goal">Goal: review all your benchmark results and documentation. Find the one thing that surprised you most. That surprise is your research question. Write it down precisely.</p>
+              
+              <div class="res-section">
+                <div class="res-label">Questions to ask your existing data</div>
+                <div class="res-item">
+                  <i class="ti ti-checklist res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Where is performance worse than expected given the roofline model?</span>
+                    <div class="res-desc">If your measured throughput is significantly below the theoretical maximum given your bandwidth, something is inefficient. That gap is a research question.</div>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-checklist res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">What does the 6GB VRAM constraint uniquely break vs datacenter GPUs?</span>
+                    <div class="res-desc">Speculative decoding needs two models. PagedAttention assumes more headroom. What optimization assumes a resource you don't have? That assumption is a target.</div>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-checklist res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">In your SnapKV K-sweep, was there a non-obvious sweet spot?</span>
+                    <div class="res-desc">If the perplexity vs memory curve had an unexpected shape for your hardware — that's a finding. Could a dynamic K value (adapting per layer or per token) do better than a fixed K?</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="res-section">
+                <div class="res-label">Arxiv search before building</div>
+                <div class="res-item">
+                  <i class="ti ti-file-text res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Search your idea on arxiv before implementing</span>
+                    <div class="res-desc">Search "LLM inference consumer GPU optimization", "dynamic KV cache", "mixed precision inference 6GB". If your idea already exists, read it — maybe you can extend it for your specific constraint.</div>
+                    <a class="res-link" href="https://arxiv.org/search/?query=LLM+inference+consumer+hardware&searchtype=all" target="_blank">arxiv.org <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="deliverable-box">
+                <div class="deliverable-label">End of week deliverable</div>
+                <div class="deliverable-item"><strong>10_research_question.md:</strong> one page. The problem you identified, evidence from your benchmark data that it's real, your hypothesis for a fix, and why existing approaches don't solve it. This document is the most important thing you will write in the entire 6 months.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 19-20 -->
+      <div class="week-card" onclick="toggle(this, event)">
+        <div class="week-top">
+          <span class="week-num">Week 19–20</span>
+          <span class="week-title">Rapid prototype + measure</span>
+          <span class="week-tag tag-novel">novel</span>
+          <span class="chevron"><i class="ti ti-chevron-down"></i></span>
+        </div>
+        <div class="week-body">
+          <div class="week-body-inner">
+            <div class="week-body-content">
+              <div class="build-banner"><strong>Project milestone:</strong> A working prototype of your novel idea, however rough. Measured against your baseline. Most ideas will show weak or no improvement. That result is not failure — it's data.</div>
+              <p class="week-goal">Goal: build the fastest possible version of your idea that you can measure. Don't optimize the prototype — just get it running and benchmark it immediately. The measurement tells you whether to continue or pivot.</p>
+              
+              <div class="res-section">
+                <div class="res-label">If the prototype shows no improvement</div>
+                <div class="res-item">
+                  <i class="ti ti-arrow-right res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Document why it failed — this is research</span>
+                    <div class="res-desc">A failed hypothesis with a clear explanation of why it failed is a legitimate research contribution. Write exactly why the approach didn't work, what assumption was wrong, and what you'd try next. That analysis is Month 6's technical report.</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="res-section">
+                <div class="res-label">If the prototype shows improvement</div>
+                <div class="res-item">
+                  <i class="ti ti-arrow-right res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Verify it's real — run the benchmark 5 times and average</span>
+                    <div class="res-desc">Single-run improvements are often noise. Run your benchmark 5 times with and without the change, average the results, and check variance. Only proceed to Month 6 full implementation if the improvement holds across runs.</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="tip-box">
+                <span><strong>Community gut-check:</strong> Post your research question (not your implementation) to r/LocalLLaMA with your benchmark data. Ask if anyone has seen this behavior. The community response tells you whether you're onto something real or missing prior work. You'll get feedback within 24 hours.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Month 6 -->
+      <div class="month-header">
+        <span class="month-label">Month 6 — Full implementation + technical report</span>
+        <div class="month-line"></div>
+      </div>
+
+      <!-- Week 21-23 -->
+      <div class="week-card" onclick="toggle(this, event)">
+        <div class="week-top">
+          <span class="week-num">Week 21–23</span>
+          <span class="week-title">Full implementation + comprehensive benchmarking</span>
+          <span class="week-tag tag-novel">novel</span>
+          <span class="chevron"><i class="ti ti-chevron-down"></i></span>
+        </div>
+        <div class="week-body">
+          <div class="week-body-inner">
+            <div class="week-body-content">
+              <div class="build-banner"><strong>Project milestone:</strong> The final, clean implementation of your novel idea (or your best SnapKV extension), with comprehensive benchmarks comparing against baseline and existing methods. This is the artifact that goes on your resume.</div>
+              <p class="week-goal">Goal: clean up your prototype, run comprehensive benchmarks (speed, memory, quality), and compare against at least two baselines — your original unmodified model and your SnapKV implementation.</p>
+              
+              <div class="res-section">
+                <div class="res-label">Measurement tools</div>
+                <div class="res-item">
+                  <i class="ti ti-brand-github res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">lm-evaluation-harness (EleutherAI)</span>
+                    <div class="res-desc">Standard quality evaluation. Run on baseline, SnapKV, and your novel method. Use the same tasks so results are comparable. Pick 2–3 tasks from the harness relevant to general capability.</div>
+                    <a class="res-link" href="https://github.com/EleutherAI/lm-evaluation-harness" target="_blank">github.com/EleutherAI/lm-evaluation-harness <i class="ti ti-external-link"></i></a>
+                  </div>
+                </div>
+                <div class="res-item">
+                  <i class="ti ti-flask res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Your benchmark.py from Week 3–4</span>
+                    <div class="res-desc">Run every experiment through the same script you built in Month 1. Consistency in measurement methodology is what makes your results credible.</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="deliverable-box">
+                <div class="deliverable-label">End of week deliverable</div>
+                <div class="deliverable-item"><strong>results/final_comparison.csv:</strong> baseline vs SnapKV vs your method — tokens/sec, VRAM, perplexity, lm-eval scores</div>
+                <div class="deliverable-item"><strong>Clean implementation:</strong> well-commented code, committed with a clear README explaining how to reproduce your results</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Week 24 -->
+      <div class="week-card" onclick="toggle(this, event)">
+        <div class="week-top">
+          <span class="week-num">Week 24</span>
+          <span class="week-title">Write the technical report</span>
+          <span class="week-tag tag-research">deliverable</span>
+          <span class="chevron"><i class="ti ti-chevron-down"></i></span>
+        </div>
+        <div class="week-body">
+          <div class="week-body-inner">
+            <div class="week-body-content">
+              <div class="build-banner"><strong>Final deliverable:</strong> A structured technical report that someone else can read, reproduce, and build on. This — alongside your BiteCast documentation — is what you show in interviews.</div>
+              <p class="week-goal">Goal: write the technical report in the same decision rationale format you used for BiteCast. Be honest about what failed. The failures are what interviewers remember.</p>
+              
+              <div class="res-section">
+                <div class="res-label">Structure</div>
+                <div class="res-item">
+                  <i class="ti ti-file-text res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">Problem → Hardware context → Background → Hypothesis → Method → Benchmarks → Results → What failed → What surprised me → Future work</span>
+                    <div class="res-desc">The "Hardware context" section is unique to your project — explicitly state that this work targets the 6GB VRAM consumer hardware constraint that datacenter research ignores. That framing makes your contribution specific and defensible.</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="res-section">
+                <div class="res-label">The one sentence that makes your resume</div>
+                <div class="res-item">
+                  <i class="ti ti-quote res-icon" aria-hidden="true"></i>
+                  <div class="res-content">
+                    <span class="res-name">"Implemented and benchmarked LLM inference optimization on consumer hardware (RTX 3050 6GB), achieving X% KV cache reduction via SnapKV with Y perplexity delta, and identified Z as an underexplored optimization target for the sub-8GB VRAM constraint."</span>
+                    <div class="res-desc">Fill in X, Y, Z with your actual numbers. That sentence, if true and measurable, is worth more than any course certificate.</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="tip-box">
+                <span><strong>Post it publicly.</strong> Publish your benchmark results to r/LocalLLaMA with a link to your GitHub repo. The community will validate your methodology, point out anything you missed, and potentially cite your numbers. Real community engagement on your work is the strongest possible validation — better than any grade.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="footer">
+      <p>LLM Inference Project-First 6-Month Roadmap &bull; Designed for high-performance visual dashboards</p>
+    </footer>
+  </div>
+
+  <script>
+    function toggle(card, event) {
+      // Prevent toggle if clicking links or nested interactive items
+      if (event && (event.target.tagName === 'A' || event.target.closest('a') || event.target.tagName === 'BUTTON' || event.target.closest('button'))) {
+        return;
+      }
+      card.classList.toggle('open');
+    }
+
+    function expandAll() {
+      document.querySelectorAll('.week-card').forEach(card => {
+        card.classList.add('open');
+      });
+    }
+
+    function collapseAll() {
+      document.querySelectorAll('.week-card').forEach(card => {
+        card.classList.remove('open');
+      });
+    }
+  </script>
+</body>
+</html>
