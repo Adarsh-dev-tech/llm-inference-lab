@@ -975,142 +975,185 @@ def calculate_95_ci(data):
 
 ---
 
-## Part 9: Optimization & Experiment Roadmap
+## Part 9: Optimization & Experiment Roadmap (Project-First Curriculum)
 
-This roadmap outlines a sequential series of experiments designed to systematically identify bottlenecks and optimize LLM inference performance.
+This roadmap outlines a hands-on, systems-first engineering curriculum structured over 6 months. It focuses on building measurement tools, hitting real resource bottlenecks on target consumer hardware (specifically an NVIDIA RTX 3050 Laptop GPU with 6 GB VRAM, 16 GB DDR5 RAM, and Intel Core i5 CPU), implementing caching algorithms, reading foundational optimization papers, and prototyping novel optimizations.
 
 ```
 +-------------------------------------------------------------------------------------------------+
 |                                    Inference Optimization Roadmap                               |
 +-------------------------------------------------------------------------------------------------+
 |                                                                                                 |
-| [Stage 1: GPU Offloading] -> [Stage 2: Quantization] -> [Stage 3: Context Scaling]              |
-| Verify host-device split      Measure memory vs speed    Evaluate memory scalability            |
+| [Month 1: Build the Lab]     -> [Month 2: Transformer Internals] -> [Month 3: Paper & SnapKV]   |
+| Weeks 1-2: llama.cpp setup      Weeks 5-6: Tiny GPT from scratch    Week 9: FlashAttention read |
+| Weeks 3-4: Benchmark script     Weeks 7-8: KV Cache memory profiler Weeks 10-12: SnapKV impl    |
 |                                                                                                 |
-| [Stage 4: KV Cache Config] -> [Stage 5: Flash Attention] -> [Stage 6: Continuous Batching]      |
-| Tune allocation parameters    Fusing attention kernels   Optimize concurrent serving            |
-|                                                                                                 |
-| [Stage 7: Speculative Dec] -> [Stage 8: Serving Engines] -> [Stage 9: Custom Kernels]            |
-| Draft draft-target loops      Compare vLLM vs TRT-LLM    Profile lower-level operations         |
+| [Month 4: Deepen the Lab]    -> [Month 5: Prototype Novel Idea]  -> [Month 6: Implement & Eval] |
+| Weeks 13-14: PagedAttention/SD  Weeks 17-18: Research question      Weeks 21-23: Evaluation     |
+| Weeks 15-16: llama.cpp tracing  Weeks 19-20: Rapid prototype        Week 24: Technical report   |
 |                                                                                                 |
 +-------------------------------------------------------------------------------------------------+
 ```
 
-### Stage 1: GPU Offloading
-*   **Goal**: Determine the baseline performance and memory usage patterns when splitting model execution layers between host CPU memory (RAM) and GPU memory (VRAM).
-*   **Metrics to Measure**: TTFT, Generation Latency (ITL), VRAM Usage, CPU Utilization, RAM Usage, PCIe Transfer Overhead.
-*   **Expected Observations**:
-    *   As the number of layers offloaded to the GPU increases, generation speed (TPS) scales non-linearly.
-    *   The transition from partial offload to full GPU offload yields a massive speedup as PCIe transfer bottlenecks are eliminated.
-*   **Deliverables**: A baseline profile mapping the number of offloaded layers to performance metrics (TPS and VRAM usage).
-*   **Research Questions**:
-    *   What is the maximum number of layers that can be offloaded before the remaining free VRAM is insufficient for a 2048-token KV cache?
-    *   How does the PCIe transfer rate limit overall generation throughput when the model is split across CPU and GPU?
+All generated deliverables are strictly routed to their designated directories:
+*   **Theory Reference Files**: Saved in `docs/` using only the 14 predefined knowledge-base filenames (e.g., `docs/transformer-basics.md`, `docs/kv-cache.md`).
+*   **Benchmark Reports**: Saved in `benchmarks/` following the `DD-MM-YYYY-experiment-name.md` format.
+*   **Learning Reports**: Saved in `learnings/` using the `learning-*.md` format.
+*   **Workload Databases**: Saved in `results/` (as `benchmark_history.csv` or JSON runs).
+*   **Code Modules**: Root directory or component subfolders (e.g., `tiny_gpt/`, `snapkv/`).
 
 ---
 
-### Stage 2: Quantization Studies
-*   **Goal**: Evaluate how precision reduction (16-bit to 8-bit, 4-bit, and 2-bit formats) affects generation throughput, memory usage, and language model accuracy.
-*   **Metrics to Measure**: VRAM Usage, Model Weight Memory, WikiText perplexity, Decode Throughput, TTFT.
-*   **Expected Observations**:
-    *   Quantization yields near-linear reductions in model memory footprint.
-    *   4-bit quantization typically preserves perplexity, while 2-bit formats show significant quality degradation.
-    *   Throughput increases significantly due to reduced memory bandwidth pressure during decoding.
-*   **Deliverables**: A tradeoff matrix showing accuracy (perplexity) and speed (TPS) across different quantization types (e.g., AWQ, GPTQ, GGUF).
-*   **Research Questions**:
-    *   At what quantization level does reasoning accuracy drop below acceptable thresholds for complex tasks like coding?
-    *   Does FP8 quantization outperform INT4 on newer architectures (e.g., Ada Lovelace / Hopper)?
+### Month 1 — Build the Benchmark Lab
+
+#### Weeks 1–2: Set Up llama.cpp & Run Your First Model
+*   **Goal**: Install `llama.cpp` from source with CUDA support and establish a baseline execution environment using the Qwen2.5-7B-Instruct model.
+*   **Target hardware decisions**: Calibrate the number of GPU offloaded layers (`-ngl` / `--n-gpu-layers`). Observe the throughput differences as layers are offloaded to VRAM vs. system RAM.
+*   **Reference Materials**: 
+    *   [llama.cpp GitHub Repository](https://github.com/ggerganov/llama.cpp)
+    *   [Hugging Face GGUF Model Repository](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF)
+    *   [Ollama homepage](https://ollama.com)
+*   **Walls Hit & Learnings**:
+    *   *Wall: "what does -ngl actually do and why does changing it affect speed?"* - Learned about memory transfer bottlenecks (PCIe) and VRAM vs RAM bandwidth. Read [Tim Dettmers' GPU blog post](https://timdettmers.com/2023/01/30/which-gpu-for-deep-learning/).
+    *   *Wall: "why is my 6GB GPU not faster than CPU for some operations?"* - Read [JAX Scaling Book roofline chapter](https://jax-ml.github.io/scaling-book/roofline/) to distinguish memory-bound vs compute-bound workloads.
+*   **Deliverables**:
+    *   **Theory Reference**: Initialize [docs/benchmarking-methodology.md](file:///c:/Projects/llm-inference-lab/docs/benchmarking-methodology.md) (controls, thermal locks).
+    *   **Benchmark Report**: [benchmarks/12-06-2026-baseline-benchmark.md](file:///c:/Projects/llm-inference-lab/benchmarks/12-06-2026-baseline-benchmark.md) (documenting partial vs full GPU offload baseline timings).
+    *   **Learning Report**: [learnings/learning-hardware-setup.md](file:///c:/Projects/llm-inference-lab/learnings/learning-hardware-setup.md) detailing compilation issues, `-ngl` findings, and memory-bandwidth observations.
+
+#### Weeks 3–4: Build the Benchmark Script
+*   **Goal**: Create a reusable Python benchmark suite (`benchmark.py`) to systematically record key latency and resource metrics across different quantization levels (Q4_K_M, Q5_K_M, Q8_0, and F16).
+*   **Metrics Recorded**: Tokens/sec, Time to First Token (TTFT), inter-token latency, CPU RAM, and GPU VRAM usage.
+*   **Reference Materials**:
+    *   [llama-cpp-python Repository](https://github.com/abetlen/llama-cpp-python)
+    *   `psutil` and `GPUtil` documentation.
+*   **Walls Hit & Learnings**:
+    *   *Wall: "why does Q4 vs Q8 affect speed, what is actually different?"* - Read GGUF specifications and [Tim Dettmers' 8-bit quantization post](https://timdettmers.com/2023/01/30/which-gpu-for-deep-learning/) to understand GGUF block-wise quantization mechanisms.
+    *   *Wall: "what is tokens/sec actually measuring and why does prompt length affect it?"* - Watched [3Blue1Brown's Linear Algebra series](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab) to map matrix multiplication cost scaling.
+*   **Deliverables**:
+    *   **Code**: [benchmark.py](file:///c:/Projects/llm-inference-lab/benchmark.py), [utils/system_monitor.py](file:///c:/Projects/llm-inference-lab/utils/system_monitor.py), [utils/metrics.py](file:///c:/Projects/llm-inference-lab/utils/metrics.py), and [utils/logging.py](file:///c:/Projects/llm-inference-lab/utils/logging.py).
+    *   **Workload Database**: [results/benchmark_history.csv](file:///c:/Projects/llm-inference-lab/results/benchmark_history.csv) (persisted history) and [results/json/](file:///c:/Projects/llm-inference-lab/results/json/) (raw run details).
+    *   **Theory Reference**: Initialize [docs/quantization.md](file:///c:/Projects/llm-inference-lab/docs/quantization.md) (precision formats theory).
+    *   **Benchmark Report**: [benchmarks/15-06-2026-quantization-benchmark.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-06-2026-quantization-benchmark.md) comparing speed and resource usage across quants.
+    *   **Learning Report**: [learnings/learning-quantization-differences.md](file:///c:/Projects/llm-inference-lab/learnings/learning-quantization-differences.md) explaining why Q4_K_M is the default for a 6GB VRAM target.
 
 ---
 
-### Stage 3: Context Scaling
-*   **Goal**: Stress-test the inference engine under scaling context lengths to analyze how memory consumption and processing times scale.
-*   **Metrics to Measure**: KV Cache Memory, VRAM Usage, TTFT (Prefill Latency), Inter-token Latency (ITL).
-*   **Expected Observations**:
-    *   KV cache size scales linearly with sequence length, eventually triggering OOM errors.
-    *   TTFT increases quadratically with prompt length under standard attention mechanisms.
-*   **Deliverables**: A profile chart mapping prompt length to VRAM usage and TTFT.
-*   **Research Questions**:
-    *   What is the maximum context length the system can support at a batch size of 1 without running out of memory?
-    *   How does prefill time scale relative to decode time as context length increases?
+### Month 2 — Transformer Internals & KV Cache Profiling
+
+#### Weeks 5–6: Build a Tiny GPT
+*   **Goal**: Write a simple autoregressive GPT from scratch in PyTorch to gain a hands-on understanding of self-attention mechanics, weight matrices, and tensor transitions.
+*   **Reference Materials**:
+    *   [Andrej Karpathy's "micrograd" tutorial](https://www.youtube.com/watch?v=VMj-3S1tku0)
+    *   [Andrej Karpathy's "GPT from scratch" tutorial](https://www.youtube.com/watch?v=kCc8FmEb1nY)
+    *   [Jay Alammar's "Illustrated Transformer"](https://jalammar.github.io/illustrated-transformer/)
+*   **Walls Hit & Learnings**:
+    *   *Wall: "what is the attention matrix actually computing and why Q × Kᵀ?"* - Read [Lilian Weng's "Attention? Attention!" post](https://lilianweng.github.io/posts/2018-06-24-attention/) to understand key-value similarity measurements.
+    *   *Wall: "why does attention scale as O(n²) and why does that matter for inference speed?"* - Tested prompt scaling limits in the benchmark lab and plotted latency to visualize the quadratic curve.
+*   **Deliverables**:
+    *   **Code**: Create `tiny_gpt/model.py`, `tiny_gpt/train.py`, and `tiny_gpt/cache_comparison.py`.
+    *   **Theory Reference**: Initialize [docs/transformer-basics.md](file:///c:/Projects/llm-inference-lab/docs/transformer-basics.md) detailing multi-head attention and architecture shapes.
+    *   **Learning Report**: [learnings/learning-transformer-internals.md](file:///c:/Projects/llm-inference-lab/learnings/learning-transformer-internals.md) mapping transformer weights, dynamic caching overhead, and context limit mathematics.
+
+#### Weeks 7–8: Build a KV Cache Memory Profiler
+*   **Goal**: Measure and model the memory growth of the KV cache across varying context lengths, determining at what point the system runs out of VRAM headroom.
+*   **Reference Materials**:
+    *   [Lilian Weng's "LLM Inference Optimization" post](https://lilianweng.github.io/posts/2023-01-10-inference-optimization/) (specifically the KV cache calculations).
+*   **Walls Hit & Learnings**:
+    *   *Wall: "what exactly is stored in the KV cache and how do I calculate its size?"* - Modeled the allocation formula: $2 \times \text{layers} \times \text{heads} \times \text{head\_dim} \times \text{context\_len} \times \text{bytes\_per\_element}$ and validated it against measured GPU allocations.
+*   **Deliverables**:
+    *   **Code**: Create `kv_cache_profiler.py`.
+    *   **Workload Database**: Save metrics to [results/kv_cache_growth.csv](file:///c:/Projects/llm-inference-lab/results/kv_cache_growth.csv).
+    *   **Theory Reference**: Initialize [docs/kv-cache.md](file:///c:/Projects/llm-inference-lab/docs/kv-cache.md) detailing sizing mathematics and allocation logic.
+    *   **Benchmark Report**: [benchmarks/25-06-2026-kv-cache-profiler.md](file:///c:/Projects/llm-inference-lab/benchmarks/25-06-2026-kv-cache-profiler.md) plotting the memory consumption profile of baseline Qwen models.
+    *   **Learning Report**: [learnings/learning-kv-cache-math.md](file:///c:/Projects/llm-inference-lab/learnings/learning-kv-cache-math.md) detailing the VRAM boundaries, allocations, and how bandwidth constraints emerge.
 
 ---
 
-### Stage 4: KV Cache Memory Management
-*   **Goal**: Optimize KV cache utilization to maximize serving concurrency.
-*   **Metrics to Measure**: Concurrent Throughput, Memory Fragmentation Ratio, Maximum Batch Size, VRAM Usage.
-*   **Expected Observations**:
-    *   Allocating static contiguous blocks for KV caches leads to high memory fragmentation and limits the active batch size.
-    *   Block-based allocation schemes (like PagedAttention) permit higher batch sizes by utilizing fragmented memory pools.
-*   **Deliverables**: An optimized cache configuration script that maximizes active batch sizes.
-*   **Research Questions**:
-    *   How much VRAM is wasted by pre-allocating contiguous buffers compared to using dynamic block allocation?
-    *   What is the optimal block size for PagedAttention that balances allocation overhead and memory efficiency?
+### Month 3 — Paper Reading & SnapKV Implementation
+
+#### Week 9: Learn How to Read a Paper & Study FlashAttention
+*   **Goal**: Master academic paper analysis techniques and read the original FlashAttention paper to understand SRAM tiling and IO memory-bound bottlenecks.
+*   **Reference Materials**:
+    *   [S. Keshav's "How to Read a Paper" guidelines](http://ccr.sigcomm.org/online/files/p83-keshavA.pdf)
+    *   [Aleksa Gordić's "ELI5 FlashAttention" breakdown](https://gordicaleksa.medium.com/eli5-flash-attention-5c44017022ad)
+    *   [FlashAttention Paper (Dao et al., 2022)](https://arxiv.org/abs/2205.14135)
+*   **Deliverables**:
+    *   **Theory Reference**: Initialize [docs/flash-attention.md](file:///c:/Projects/llm-inference-lab/docs/flash-attention.md) outlining fused kernels and SRAM tiles.
+    *   **Learning Report**: [learnings/learning-flashattention-memory-io.md](file:///c:/Projects/llm-inference-lab/learnings/learning-flashattention-memory-io.md) detailing hardware-level analyses of HBM transfers vs kernel processing.
+
+#### Weeks 10–12: Implement SnapKV and Benchmark It
+*   **Goal**: Build a custom PyTorch/Transformers hook that compresses the KV cache dynamically using SnapKV (clustering key-value pairs by attention scores) and evaluate its speed vs. perplexity trade-offs.
+*   **Reference Materials**:
+    *   [SnapKV Paper (Li et al., 2024)](https://arxiv.org/abs/2404.14469)
+    *   [SnapKV GitHub Repository](https://github.com/FasterDecoding/SnapKV)
+*   **Walls Hit & Learnings**:
+    *   *Wall: "how do I hook into the attention layer to intercept the KV cache?"* - Explored Hugging Face Transformers' internal state management and intercepted the `past_key_values` object.
+    *   *Wall: "my perplexity is much worse than the paper reports — why?"* - Ran a comprehensive parameter sweep on $K$ (cache size limit) from 16 to 256 to isolate the optimal threshold.
+*   **Deliverables**:
+    *   **Code**: Create `snapkv/hook.py` and `snapkv/eval.py`.
+    *   **Workload Database**: Save sweeps to `results/snapkv_benchmark.csv`.
+    *   **Theory Reference**: Update [docs/kv-cache.md](file:///c:/Projects/llm-inference-lab/docs/kv-cache.md) adding attention pooling and compression algorithms.
+    *   **Benchmark Report**: [benchmarks/15-07-2026-snapkv-compression.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-07-2026-snapkv-compression.md) showing VRAM savings and quality (perplexity) parameters over sweeps.
+    *   **Learning Report**: [learnings/learning-snapkv-mechanics.md](file:///c:/Projects/llm-inference-lab/learnings/learning-snapkv-mechanics.md) covering hook insertions, key retention metrics, and consumer GPU execution efficiency.
 
 ---
 
-### Stage 5: Flash Attention
-*   **Goal**: Evaluate the performance impact of using fused attention kernels (FlashAttention-2, Flash Decoding) to optimize attention calculations.
-*   **Metrics to Measure**: TTFT, Decode Throughput, SM Utilization, GPU Memory Bandwidth, VRAM Usage.
-*   **Expected Observations**:
-    *   Flash Attention significantly reduces TTFT for long context prompts.
-    *   Memory bandwidth utilization drops because intermediate attention matrices are kept in fast SRAM registers rather than written to VRAM.
-*   **Deliverables**: A comparative benchmark analysis comparing standard PyTorch attention and FlashAttention.
-*   **Research Questions**:
-    *   Does Flash Attention provide significant speedups for short prompts, or is its impact limited to long contexts?
-    *   How does SM utilization change when transitioning from standard attention mechanisms to FlashAttention?
+### Month 4 — PagedAttention, Speculative Decoding & llama.cpp Tracing
+
+#### Weeks 13–14: Read PagedAttention & Speculative Decoding
+*   **Goal**: Study virtual memory page allocations for KV cache blocks (PagedAttention) and speculative generation architectures.
+*   **Reference Materials**:
+    *   [vLLM Blog Post on PagedAttention](https://blog.vllm.ai/2023/06/20/vllm.html)
+    *   [Lilian Weng's Speculative Decoding explanation](https://lilianweng.github.io/posts/2023-01-10-inference-optimization/)
+    *   [Speculative Decoding Paper (Leviathan et al., 2023)](https://arxiv.org/abs/2211.17192)
+*   **Deliverables**:
+    *   **Theory Reference**: Initialize [docs/paged-attention.md](file:///c:/Projects/llm-inference-lab/docs/paged-attention.md) (block mapping layouts) and [docs/speculative-decoding.md](file:///c:/Projects/llm-inference-lab/docs/speculative-decoding.md) (acceptance criteria/draft networks).
+    *   **Learning Report**: [learnings/learning-speculative-decoding-constraints.md](file:///c:/Projects/llm-inference-lab/learnings/learning-speculative-decoding-constraints.md) highlighting VRAM capacity limits and latency tradeoffs during dual-model serving on consumer chips.
+
+#### Weeks 15–16: Read llama.cpp Source & Measure Speculative Decoding
+*   **Goal**: Trace the inner inference loop and KV cache management in the `llama.cpp` codebase, and benchmark speculative decoding natively using a tiny draft model (e.g., Qwen2.5-1B) paired with the baseline model.
+*   **Reference Materials**:
+    *   [llama.cpp sampling and execution loops](https://github.com/ggerganov/llama.cpp)
+*   **Deliverables**:
+    *   **Workload Database**: Save raw runs to `results/speculative_decoding_benchmark.csv`.
+    *   **Theory Reference**: Update [docs/speculative-decoding.md](file:///c:/Projects/llm-inference-lab/docs/speculative-decoding.md) detailing native C++ speculative execution structures.
+    *   **Benchmark Report**: [benchmarks/15-08-2026-speculative-decoding.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-08-2026-speculative-decoding.md) documenting speedups and acceptance rates under dynamic hardware partitions.
 
 ---
 
-### Stage 6: Continuous Batching
-*   **Goal**: Implement and evaluate continuous batching schedulers under multi-user concurrency workloads.
-*   **Metrics to Measure**: Requests Per Second (RPS), Average Wait Time in Queue, Queue Jitter, Aggregate Decode Throughput.
-*   **Expected Observations**:
-    *   Static batching introduces idle bubbles as the entire batch must wait for the longest generation request to complete.
-    *   Continuous batching yields significantly higher global throughput by injecting and extracting requests on the fly.
-*   **Deliverables**: A load-test simulation showing system throughput and queue latencies under varying arrival rates.
-*   **Research Questions**:
-    *   How does continuous batching affect individual user latency variance (jitter)?
-    *   What scheduling policy (e.g., First-Come-First-Served vs. Shortest-Job-First) maximizes throughput while maintaining latency SLAs?
+### Month 5 — Prototype a Novel Optimization Idea
+
+#### Weeks 17–18: Idea Journaling & Research Question Formulation
+*   **Goal**: Review all performance logs to identify inefficiencies under consumer resource boundaries (e.g., dynamic $K$-selection, hybrid offloading schedules) and frame a clear research hypothesis.
+*   **Reference Materials**:
+    *   arXiv search listings on low-VRAM LLM serving.
+*   **Deliverables**:
+    *   **Learning Report**: [learnings/learning-research-proposal.md](file:///c:/Projects/llm-inference-lab/learnings/learning-research-proposal.md) proposing the hypothesis, target hardware configurations, and planned pipeline designs.
+
+#### Weeks 19–20: Rapid Prototyping & Initial Evaluation
+*   **Goal**: Build a minimal prototype of the proposed optimization within the local codebase and run rapid measurements to confirm if the latency/memory savings hold.
+*   **Deliverables**:
+    *   **Code**: Create experimental scripts under a `prototype/` directory.
+    *   **Benchmark Report**: [benchmarks/15-09-2026-prototype-evaluation.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-09-2026-prototype-evaluation.md) documenting early evaluations, execution speed deltas, and failure adjustments.
 
 ---
 
-### Stage 7: Speculative Decoding
-*   **Goal**: Accelerate generation speeds by using a small, fast draft model to speculate tokens that are verified in parallel by a larger target model.
-*   **Metrics to Measure**: Inter-token Latency (ITL), Draft Acceptance Rate, Aggregate TPS, GPU Compute Utilization.
-*   **Expected Observations**:
-    *   Speculative decoding can significantly increase TPS if the draft model's acceptance rate remains high.
-    *   If the acceptance rate is low, execution speed can degrade below baseline levels due to the overhead of running draft model forward passes.
-*   **Deliverables**: An implementation profile of speculative decoding mapping acceptance rates to speedups.
-*   **Research Questions**:
-    *   What is the minimum draft model acceptance rate required to achieve a speedup compared to standard decoding?
-    *   How does the prompt context domain affect the draft model's acceptance rate?
+### Month 6 — Full Implementation, Evaluation & Technical Report
 
----
+#### Weeks 21–23: Full Implementation & Broad Evaluation
+*   **Goal**: Refine the prototype into a production-grade codebase, evaluate generation quality using standard harnesses, and compile a final comparison against baseline and SnapKV implementations.
+*   **Reference Materials**:
+    *   [EleutherAI LM-Evaluation-Harness](https://github.com/EleutherAI/lm-evaluation-harness)
+*   **Deliverables**:
+    *   **Code**: Populate production modules inside `src/`.
+    *   **Workload Database**: Save summary evaluations to [results/final_comparison.csv](file:///c:/Projects/llm-inference-lab/results/final_comparison.csv).
+    *   **Benchmark Report**: [benchmarks/15-10-2026-final-evaluation.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-10-2026-final-evaluation.md) compiling overall latency, throughput, and accuracy tables.
 
-### Stage 8: Serving Frameworks
-*   **Goal**: Compare the production efficiency and performance of major LLM serving runtimes.
-*   **Metrics to Measure**: RPS, p50/p95/p99 Latency, Concurrent Throughput, RAM/VRAM footprint at idle.
-*   **Expected Observations**:
-    *   Production serving runtimes (e.g., vLLM, TensorRT-LLM, TGI) outperform native PyTorch servers by multiple orders of magnitude.
-    *   Each framework exhibits distinct memory overheads and compilation startup times.
-*   **Deliverables**: A benchmark report comparing runtime performance metrics to guide production deployment decisions.
-*   **Research Questions**:
-    *   Which serving framework provides the lowest p99 latency under heavy concurrent load?
-    *   How does the developer complexity and compilation overhead of TensorRT-LLM compare to the plug-and-play setup of vLLM?
-
----
-
-### Stage 9: Kernel-level Optimization
-*   **Goal**: Profile and optimize individual CUDA/Triton kernels to eliminate compute and memory access bottlenecks.
-*   **Metrics to Measure**: SM Occupancy, Tensor Core Pipe Active Cycles, DRAM Bandwidth, Register file spill size.
-*   **Expected Observations**:
-    *   Optimizing thread block layouts and memory coalescing patterns improves kernel execution efficiency.
-    *   Fusing multiple operators (e.g., activation functions and normalization layers) reduces high-bandwidth memory read/write cycles.
-*   **Deliverables**: Profile reports from profiling tools (NVIDIA Nsight Compute) along with optimized kernel implementations.
-*   **Research Questions**:
-    *   Which specific operators are the primary sources of memory bandwidth bottlenecks during decoding?
-    *   Does rewriting custom attention structures in Triton yield performance improvements over default CUDA library calls?
+#### Week 24: Write the Technical Report
+*   **Goal**: Document the entire 6-month study, the optimization mechanics, measured performance gains, trade-offs, and future directions.
+*   **Deliverables**:
+    *   **Learning Report**: [learnings/learning-final-technical-report.md](file:///c:/Projects/llm-inference-lab/learnings/learning-final-technical-report.md) serving as the comprehensive project publication and technical summary.
 
 ---
 
