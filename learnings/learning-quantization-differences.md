@@ -16,7 +16,7 @@ On resource-constrained hardware with a strict 6 GB VRAM limit, **Q4_K_M** is th
 
 ### The KV Cache Headroom Safeguard
 VRAM is occupied by both static model weights and the **dynamic Key-Value (KV) cache**. The KV cache stores attention vectors for all tokens in the context window and scales linearly with batch size and context length:
-$$\text{KV Cache Size (bytes)} = 2 \times \text{layers} \times \text{heads} \times \text{head\_dim} \times \text{bytes\_per\_element} \times \text{context\_len} \times \text{batch\_size}$$
+$$\text{KV Cache Size (bytes)} = 2 \times \text{layers} \times \text{heads} \times \text{head dim} \times \text{bytes per element} \times \text{context len} \times \text{batch size}$$
 
 *   For `Qwen2.5-7B` at FP16, a context length of **2048 tokens** and a batch size of **1** requires **~0.25 GB** of VRAM for the KV cache.
 *   If using **Q5_K_M**, the static weights consume ~5.58 GB (including baseline OS overhead). Adding a 2048-token context cache (~0.25 GB) pushes total VRAM usage to ~5.83 GB—dangerously close to the 6.0 GB physical ceiling. Any increase in context length (e.g. up to 4096 tokens) or batch size will immediately trigger VRAM overflow.
@@ -32,16 +32,16 @@ Choosing a quantization level involves balancing three variables:
                   +-----------------------------------------+
                   |         The Quantization Trilemma       |
                   +-----------------------------------------+
+                                     
+                                    [Memory]
+                                    (VRAM/RAM)
                                        /\
                                       /  \
                                      /    \
                                     /      \
                       [Speed]      /________\     [Perplexity]
                      (Throughput)                  (Reasoning)
-                                       \  /
-                                        \/
-                                     [Memory]
-                                    (VRAM/RAM)
+                                     
 ```
 
 1.  **VRAM Footprint (Memory)**: Lower bit-widths compress weights, reducing storage size.
