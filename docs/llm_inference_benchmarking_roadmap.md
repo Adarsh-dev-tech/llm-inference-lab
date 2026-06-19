@@ -357,7 +357,7 @@ Memory is the primary bottleneck in LLM inference. An LLM's weights, along with 
 |  * Stores Key/Value activations for all active tokens                 |
 |                                                                       |
 |  [Activation Memory] (Transient, Peak size during forward pass)       |
-|  * Temporary tensors stored during backprop/forward steps            |
+|  * Temporary tensors stored during backprop/forward steps             |
 |                                                                       |
 |  [Memory Fragmentation / Overhead] (Unusable VRAM gap)                |
 |                                                                       |
@@ -943,10 +943,10 @@ Designing benchmarks that yield consistent, reproducible, and unbiased results r
 +-----------------------------------------------------------------------+
 |                                                                       |
 |  [p50 / Median Latency]                                               |
-|  * Represents typical user experience                                  |
+|  * Represents typical user experience                                 |
 |                                                                       |
 |  [p95 / p99 Latency]                                                  |
-|  * Captures worst-case spikes (e.g., queue stalls, garbage collection) |
+|  * Captures worst-case spikes (e.g., queue stalls, garbage collection)|
 |                                                                       |
 +-----------------------------------------------------------------------+
 ```
