@@ -136,8 +136,8 @@ During initial runs, background instances of **LM Studio** occupied ~1.5 GB of G
 *   Test split-offloading configurations (`-ngl <33`) on the `Q8_0` model to see if pinning a fixed set of layers to VRAM yields better throughput than letting WDDM perform dynamic paging.
 
 ## Related Learnings
-*   [Learning Report: Quantization and Memory Bandwidth Limits](file:///c:/Projects/llm-inference-lab/learnings/learning-quantization-differences.md)
+*   [Learning Report: Quantization and Memory Bandwidth Limits](../learnings/learning-quantization-differences.md)
 
 ## Related Theory Documents
-*   [Theory Reference: Quantization Precision Formats](file:///c:/Projects/llm-inference-lab/docs/quantization.md)
-*   [Theory Reference: Hardware Benchmarking Methodology](file:///c:/Projects/llm-inference-lab/docs/benchmarking-methodology.md)
+*   [Theory Reference: Quantization Precision Formats](../docs/quantization.md)
+*   [Theory Reference: Hardware Benchmarking Methodology](../docs/benchmarking-methodology.md)

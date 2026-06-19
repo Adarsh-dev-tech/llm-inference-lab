@@ -21,9 +21,9 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   - [Tim Dettmers' GPU Guide](https://timdettmers.com/2023/01/30/which-gpu-for-deep-learning/) — High-level details on VRAM sizes and memory bandwidth constraints.
   - [JAX Scaling Book Roofline Model](https://jax-ml.github.io/scaling-book/roofline/) — Guide to identifying compute-bound vs memory-bound bottlenecks.
 - **Expected Deliverables**:
-  - **Theory Reference**: Initialize [docs/benchmarking-methodology.md](file:///c:/Projects/llm-inference-lab/docs/benchmarking-methodology.md) (controls, thermal locks).
-  - **Benchmark Report**: [benchmarks/12-06-2026-baseline-benchmark.md](file:///c:/Projects/llm-inference-lab/benchmarks/12-06-2026-baseline-benchmark.md) (documenting partial vs full GPU offload baseline timings).
-  - **Learning Report**: [learnings/learning-hardware-setup.md](file:///c:/Projects/llm-inference-lab/learnings/learning-hardware-setup.md) detailing compilation issues, `-ngl` findings, and memory-bandwidth observations.
+  - **Theory Reference**: Initialize [docs/benchmarking-methodology.md](benchmarking-methodology.md) (controls, thermal locks).
+  - **Benchmark Report**: [benchmarks/12-06-2026-baseline-benchmark.md](../benchmarks/12-06-2026-baseline-benchmark.md) (documenting partial vs full GPU offload baseline timings).
+  - **Learning Report**: [learnings/learning-hardware-setup.md](../learnings/learning-hardware-setup.md) detailing compilation issues, `-ngl` findings, and memory-bandwidth observations.
 
 ---
 
@@ -41,11 +41,11 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   - [GGUF Specifications](https://github.com/ggerganov/ggml/blob/master/docs/gguf.md) — Understanding block-wise quantization types.
   - [3Blue1Brown Linear Algebra Series](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab) — Deep dive into vector-matrix mapping and dimensions scaling.
 - **Expected Deliverables**:
-  - **Code**: [benchmark.py](file:///c:/Projects/llm-inference-lab/benchmark.py), [utils/system_monitor.py](file:///c:/Projects/llm-inference-lab/utils/system_monitor.py), [utils/metrics.py](file:///c:/Projects/llm-inference-lab/utils/metrics.py), and [utils/logging.py](file:///c:/Projects/llm-inference-lab/utils/logging.py).
-  - **Workload Database**: [results/benchmark_history.csv](file:///c:/Projects/llm-inference-lab/results/benchmark_history.csv) (persisted history) and [results/json/](file:///c:/Projects/llm-inference-lab/results/json/) (raw run details).
-  - **Theory Reference**: Initialize [docs/quantization.md](file:///c:/Projects/llm-inference-lab/docs/quantization.md) (precision formats theory).
-  - **Benchmark Report**: [benchmarks/15-06-2026-quantization-benchmark.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-06-2026-quantization-benchmark.md) comparing speed and resource usage across quants.
-  - **Learning Report**: [learnings/learning-quantization-differences.md](file:///c:/Projects/llm-inference-lab/learnings/learning-quantization-differences.md) explaining why Q4_K_M is the default for a 6GB VRAM target.
+  - **Code**: [benchmark.py](../benchmark.py), [utils/system_monitor.py](../utils/system_monitor.py), [utils/metrics.py](../utils/metrics.py), and [utils/logging.py](../utils/logging.py).
+  - **Workload Database**: [results/benchmark_history.csv](../results/benchmark_history.csv) (persisted history) and [results/json/](../results/json) (raw run details).
+  - **Theory Reference**: Initialize [docs/quantization.md](quantization.md) (precision formats theory).
+  - **Benchmark Report**: [benchmarks/15-06-2026-quantization-benchmark.md](../benchmarks/15-06-2026-quantization-benchmark.md) comparing speed and resource usage across quants.
+  - **Learning Report**: [learnings/learning-quantization-differences.md](../learnings/learning-quantization-differences.md) explaining why Q4_K_M is the default for a 6GB VRAM target.
 
 ---
 
@@ -65,8 +65,8 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   - [Lilian Weng's Attention? Attention!](https://lilianweng.github.io/posts/2018-06-24-attention/) — Mathematical context on the dot-product similarity metrics.
 - **Expected Deliverables**:
   - **Code**: Create `tiny_gpt/model.py`, `tiny_gpt/train.py`, and `tiny_gpt/cache_comparison.py`.
-  - **Theory Reference**: Initialize [docs/transformer-basics.md](file:///c:/Projects/llm-inference-lab/docs/transformer-basics.md) detailing multi-head attention and architecture shapes.
-  - **Learning Report**: [learnings/learning-transformer-internals.md](file:///c:/Projects/llm-inference-lab/learnings/learning-transformer-internals.md) mapping transformer weights, dynamic caching overhead, and context limit mathematics.
+  - **Theory Reference**: Initialize [docs/transformer-basics.md](transformer-basics.md) detailing multi-head attention and architecture shapes.
+  - **Learning Report**: [learnings/learning-transformer-internals.md](../learnings/learning-transformer-internals.md) mapping transformer weights, dynamic caching overhead, and context limit mathematics.
 
 ---
 
@@ -82,10 +82,10 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   - Hugging Face transformers model configuration files to extract Qwen2.5-7B dimension config ($n_{layers}=28$, $n_{heads}=28$, $d_{head}=128$).
 - **Expected Deliverables**:
   - **Code**: Create `kv_cache_profiler.py`.
-  - **Workload Database**: Save metrics to [results/kv_cache_growth.csv](file:///c:/Projects/llm-inference-lab/results/kv_cache_growth.csv).
-  - **Theory Reference**: Initialize [docs/kv-cache.md](file:///c:/Projects/llm-inference-lab/docs/kv-cache.md) detailing sizing mathematics and allocation logic.
-  - **Benchmark Report**: [benchmarks/25-06-2026-kv-cache-profiler.md](file:///c:/Projects/llm-inference-lab/benchmarks/25-06-2026-kv-cache-profiler.md) plotting the memory consumption profile of baseline Qwen models.
-  - **Learning Report**: [learnings/learning-kv-cache-math.md](file:///c:/Projects/llm-inference-lab/learnings/learning-kv-cache-math.md) detailing the VRAM boundaries, allocations, and how bandwidth constraints emerge.
+  - **Workload Database**: Save metrics to [results/kv_cache_growth.csv](../results/kv_cache_growth.csv).
+  - **Theory Reference**: Initialize [docs/kv-cache.md](kv-cache.md) detailing sizing mathematics and allocation logic.
+  - **Benchmark Report**: [benchmarks/25-06-2026-kv-cache-profiler.md](../benchmarks/25-06-2026-kv-cache-profiler.md) plotting the memory consumption profile of baseline Qwen models.
+  - **Learning Report**: [learnings/learning-kv-cache-math.md](../learnings/learning-kv-cache-math.md) detailing the VRAM boundaries, allocations, and how bandwidth constraints emerge.
 
 ---
 
@@ -105,8 +105,8 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   - [Aleksa Gordić's ELI5 FlashAttention](https://gordicaleksa.medium.com/eli5-flash-attention-5c44017022ad) — Simple visual and text breakdown.
   - [FlashAttention Paper (Dao et al., 2022)](https://arxiv.org/abs/2205.14135) — PDF manuscript.
 - **Expected Deliverables**:
-  - **Theory Reference**: Initialize [docs/flash-attention.md](file:///c:/Projects/llm-inference-lab/docs/flash-attention.md) outlining fused kernels and SRAM tiles.
-  - **Learning Report**: [learnings/learning-flashattention-memory-io.md](file:///c:/Projects/llm-inference-lab/learnings/learning-flashattention-memory-io.md) detailing hardware-level analyses of HBM transfers vs kernel processing.
+  - **Theory Reference**: Initialize [docs/flash-attention.md](flash-attention.md) outlining fused kernels and SRAM tiles.
+  - **Learning Report**: [learnings/learning-flashattention-memory-io.md](../learnings/learning-flashattention-memory-io.md) detailing hardware-level analyses of HBM transfers vs kernel processing.
 
 ---
 
@@ -124,9 +124,9 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
 - **Expected Deliverables**:
   - **Code**: Create `snapkv/hook.py` and `snapkv/eval.py`.
   - **Workload Database**: Save sweeps to `results/snapkv_benchmark.csv`.
-  - **Theory Reference**: Update [docs/kv-cache.md](file:///c:/Projects/llm-inference-lab/docs/kv-cache.md) adding attention pooling and compression algorithms.
-  - **Benchmark Report**: [benchmarks/15-07-2026-snapkv-compression.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-07-2026-snapkv-compression.md) showing VRAM savings and quality (perplexity) parameters over sweeps.
-  - **Learning Report**: [learnings/learning-snapkv-mechanics.md](file:///c:/Projects/llm-inference-lab/learnings/learning-snapkv-mechanics.md) covering hook insertions, key retention metrics, and consumer GPU execution efficiency.
+  - **Theory Reference**: Update [docs/kv-cache.md](kv-cache.md) adding attention pooling and compression algorithms.
+  - **Benchmark Report**: [benchmarks/15-07-2026-snapkv-compression.md](../benchmarks/15-07-2026-snapkv-compression.md) showing VRAM savings and quality (perplexity) parameters over sweeps.
+  - **Learning Report**: [learnings/learning-snapkv-mechanics.md](../learnings/learning-snapkv-mechanics.md) covering hook insertions, key retention metrics, and consumer GPU execution efficiency.
 
 ---
 
@@ -143,8 +143,8 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   - [Speculative Decoding Paper (Leviathan et al., 2023)](https://arxiv.org/abs/2211.17192) — Core verification theorem.
   - [Lilian Weng's Speculative Decoding Guide](https://lilianweng.github.io/posts/2023-01-10-inference-optimization/) — Sizing target vs draft models.
 - **Expected Deliverables**:
-  - **Theory Reference**: Initialize [docs/paged-attention.md](file:///c:/Projects/llm-inference-lab/docs/paged-attention.md) (block mapping layouts) and [docs/speculative-decoding.md](file:///c:/Projects/llm-inference-lab/docs/speculative-decoding.md) (acceptance criteria/draft networks).
-  - **Learning Report**: [learnings/learning-speculative-decoding-constraints.md](file:///c:/Projects/llm-inference-lab/learnings/learning-speculative-decoding-constraints.md) highlighting VRAM capacity limits and latency tradeoffs during dual-model serving on consumer chips.
+  - **Theory Reference**: Initialize [docs/paged-attention.md](paged-attention.md) (block mapping layouts) and [docs/speculative-decoding.md](speculative-decoding.md) (acceptance criteria/draft networks).
+  - **Learning Report**: [learnings/learning-speculative-decoding-constraints.md](../learnings/learning-speculative-decoding-constraints.md) highlighting VRAM capacity limits and latency tradeoffs during dual-model serving on consumer chips.
 
 ---
 
@@ -159,8 +159,8 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   - [Hugging Face Qwen2.5-1B-Instruct GGUF](https://huggingface.co/Qwen/Qwen2.5-1B-Instruct-GGUF) — Light draft weights.
 - **Expected Deliverables**:
   - **Workload Database**: Save raw runs to `results/speculative_decoding_benchmark.csv`.
-  - **Theory Reference**: Update [docs/speculative-decoding.md](file:///c:/Projects/llm-inference-lab/docs/speculative-decoding.md) detailing native C++ speculative execution structures.
-  - **Benchmark Report**: [benchmarks/15-08-2026-speculative-decoding.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-08-2026-speculative-decoding.md) documenting speedups and acceptance rates under dynamic hardware partitions.
+  - **Theory Reference**: Update [docs/speculative-decoding.md](speculative-decoding.md) detailing native C++ speculative execution structures.
+  - **Benchmark Report**: [benchmarks/15-08-2026-speculative-decoding.md](../benchmarks/15-08-2026-speculative-decoding.md) documenting speedups and acceptance rates under dynamic hardware partitions.
 
 ---
 
@@ -176,7 +176,7 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   - [arXiv Search Portal](https://arxiv.org/search/?query=LLM+inference+consumer+hardware&searchtype=all) — Querying literature on dynamic cache sizing, layer partitioning, or memory saving on consumer chips.
   - Local CSV histories and logs.
 - **Expected Deliverables**:
-  - **Learning Report**: [learnings/learning-research-proposal.md](file:///c:/Projects/llm-inference-lab/learnings/learning-research-proposal.md) proposing the hypothesis, target hardware configurations, and planned pipeline designs.
+  - **Learning Report**: [learnings/learning-research-proposal.md](../learnings/learning-research-proposal.md) proposing the hypothesis, target hardware configurations, and planned pipeline designs.
 
 ---
 
@@ -191,7 +191,7 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   - Community feedback (e.g., share design notes on r/LocalLLaMA).
 - **Expected Deliverables**:
   - **Code**: Create experimental scripts under a `prototype/` directory.
-  - **Benchmark Report**: [benchmarks/15-09-2026-prototype-evaluation.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-09-2026-prototype-evaluation.md) documenting early evaluations, execution speed deltas, and failure adjustments.
+  - **Benchmark Report**: [benchmarks/15-09-2026-prototype-evaluation.md](../benchmarks/15-09-2026-prototype-evaluation.md) documenting early evaluations, execution speed deltas, and failure adjustments.
 
 ---
 
@@ -208,8 +208,8 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   - Custom `benchmark.py` suite.
 - **Expected Deliverables**:
   - **Code**: Populate production modules inside `src/`.
-  - **Workload Database**: Save summary evaluations to [results/final_comparison.csv](file:///c:/Projects/llm-inference-lab/results/final_comparison.csv).
-  - **Benchmark Report**: [benchmarks/15-10-2026-final-evaluation.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-10-2026-final-evaluation.md) compiling overall latency, throughput, and accuracy tables.
+  - **Workload Database**: Save summary evaluations to [results/final_comparison.csv](../results/final_comparison.csv).
+  - **Benchmark Report**: [benchmarks/15-10-2026-final-evaluation.md](../benchmarks/15-10-2026-final-evaluation.md) compiling overall latency, throughput, and accuracy tables.
 
 ---
 
@@ -221,4 +221,4 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
 - **Reference & Learning Materials**:
   - Local reports and learnings archives.
 - **Expected Deliverables**:
-  - **Learning Report**: [learnings/learning-final-technical-report.md](file:///c:/Projects/llm-inference-lab/learnings/learning-final-technical-report.md) serving as the comprehensive project publication and technical summary.
+  - **Learning Report**: [learnings/learning-final-technical-report.md](../learnings/learning-final-technical-report.md) serving as the comprehensive project publication and technical summary.

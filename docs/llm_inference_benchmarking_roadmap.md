@@ -1017,9 +1017,9 @@ All generated deliverables are strictly routed to their designated directories:
     *   *Wall: "what does -ngl actually do and why does changing it affect speed?"* - Learned about memory transfer bottlenecks (PCIe) and VRAM vs RAM bandwidth. Read [Tim Dettmers' GPU blog post](https://timdettmers.com/2023/01/30/which-gpu-for-deep-learning/).
     *   *Wall: "why is my 6GB GPU not faster than CPU for some operations?"* - Read [JAX Scaling Book roofline chapter](https://jax-ml.github.io/scaling-book/roofline/) to distinguish memory-bound vs compute-bound workloads.
 *   **Deliverables**:
-    *   **Theory Reference**: Initialize [docs/benchmarking-methodology.md](file:///c:/Projects/llm-inference-lab/docs/benchmarking-methodology.md) (controls, thermal locks).
-    *   **Benchmark Report**: [benchmarks/12-06-2026-baseline-benchmark.md](file:///c:/Projects/llm-inference-lab/benchmarks/12-06-2026-baseline-benchmark.md) (documenting partial vs full GPU offload baseline timings).
-    *   **Learning Report**: [learnings/learning-hardware-setup.md](file:///c:/Projects/llm-inference-lab/learnings/learning-hardware-setup.md) detailing compilation issues, `-ngl` findings, and memory-bandwidth observations.
+    *   **Theory Reference**: Initialize [docs/benchmarking-methodology.md](benchmarking-methodology.md) (controls, thermal locks).
+    *   **Benchmark Report**: [benchmarks/12-06-2026-baseline-benchmark.md](../benchmarks/12-06-2026-baseline-benchmark.md) (documenting partial vs full GPU offload baseline timings).
+    *   **Learning Report**: [learnings/learning-hardware-setup.md](../learnings/learning-hardware-setup.md) detailing compilation issues, `-ngl` findings, and memory-bandwidth observations.
 
 #### Weeks 3–4: Build the Benchmark Script
 *   **Goal**: Create a reusable Python benchmark suite (`benchmark.py`) to systematically record key latency and resource metrics across different quantization levels (Q4_K_M, Q5_K_M, Q8_0, and F16).
@@ -1031,11 +1031,11 @@ All generated deliverables are strictly routed to their designated directories:
     *   *Wall: "why does Q4 vs Q8 affect speed, what is actually different?"* - Read GGUF specifications and [Tim Dettmers' 8-bit quantization post](https://timdettmers.com/2023/01/30/which-gpu-for-deep-learning/) to understand GGUF block-wise quantization mechanisms.
     *   *Wall: "what is tokens/sec actually measuring and why does prompt length affect it?"* - Watched [3Blue1Brown's Linear Algebra series](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab) to map matrix multiplication cost scaling.
 *   **Deliverables**:
-    *   **Code**: [benchmark.py](file:///c:/Projects/llm-inference-lab/benchmark.py), [utils/system_monitor.py](file:///c:/Projects/llm-inference-lab/utils/system_monitor.py), [utils/metrics.py](file:///c:/Projects/llm-inference-lab/utils/metrics.py), and [utils/logging.py](file:///c:/Projects/llm-inference-lab/utils/logging.py).
-    *   **Workload Database**: [results/benchmark_history.csv](file:///c:/Projects/llm-inference-lab/results/benchmark_history.csv) (persisted history) and [results/json/](file:///c:/Projects/llm-inference-lab/results/json/) (raw run details).
-    *   **Theory Reference**: Initialize [docs/quantization.md](file:///c:/Projects/llm-inference-lab/docs/quantization.md) (precision formats theory).
-    *   **Benchmark Report**: [benchmarks/15-06-2026-quantization-benchmark.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-06-2026-quantization-benchmark.md) comparing speed and resource usage across quants.
-    *   **Learning Report**: [learnings/learning-quantization-differences.md](file:///c:/Projects/llm-inference-lab/learnings/learning-quantization-differences.md) explaining why Q4_K_M is the default for a 6GB VRAM target.
+    *   **Code**: [benchmark.py](../benchmark.py), [utils/system_monitor.py](../utils/system_monitor.py), [utils/metrics.py](../utils/metrics.py), and [utils/logging.py](../utils/logging.py).
+    *   **Workload Database**: [results/benchmark_history.csv](../results/benchmark_history.csv) (persisted history) and [results/json/](../results/json) (raw run details).
+    *   **Theory Reference**: Initialize [docs/quantization.md](quantization.md) (precision formats theory).
+    *   **Benchmark Report**: [benchmarks/15-06-2026-quantization-benchmark.md](../benchmarks/15-06-2026-quantization-benchmark.md) comparing speed and resource usage across quants.
+    *   **Learning Report**: [learnings/learning-quantization-differences.md](../learnings/learning-quantization-differences.md) explaining why Q4_K_M is the default for a 6GB VRAM target.
 
 ---
 
@@ -1052,8 +1052,8 @@ All generated deliverables are strictly routed to their designated directories:
     *   *Wall: "why does attention scale as O(n²) and why does that matter for inference speed?"* - Tested prompt scaling limits in the benchmark lab and plotted latency to visualize the quadratic curve.
 *   **Deliverables**:
     *   **Code**: Create `tiny_gpt/model.py`, `tiny_gpt/train.py`, and `tiny_gpt/cache_comparison.py`.
-    *   **Theory Reference**: Initialize [docs/transformer-basics.md](file:///c:/Projects/llm-inference-lab/docs/transformer-basics.md) detailing multi-head attention and architecture shapes.
-    *   **Learning Report**: [learnings/learning-transformer-internals.md](file:///c:/Projects/llm-inference-lab/learnings/learning-transformer-internals.md) mapping transformer weights, dynamic caching overhead, and context limit mathematics.
+    *   **Theory Reference**: Initialize [docs/transformer-basics.md](transformer-basics.md) detailing multi-head attention and architecture shapes.
+    *   **Learning Report**: [learnings/learning-transformer-internals.md](../learnings/learning-transformer-internals.md) mapping transformer weights, dynamic caching overhead, and context limit mathematics.
 
 #### Weeks 7–8: Build a KV Cache Memory Profiler
 *   **Goal**: Measure and model the memory growth of the KV cache across varying context lengths, determining at what point the system runs out of VRAM headroom.
@@ -1063,10 +1063,10 @@ All generated deliverables are strictly routed to their designated directories:
     *   *Wall: "what exactly is stored in the KV cache and how do I calculate its size?"* - Modeled the allocation formula: $2 \times \text{layers} \times \text{heads} \times \text{head\_dim} \times \text{context\_len} \times \text{bytes\_per\_element}$ and validated it against measured GPU allocations.
 *   **Deliverables**:
     *   **Code**: Create `kv_cache_profiler.py`.
-    *   **Workload Database**: Save metrics to [results/kv_cache_growth.csv](file:///c:/Projects/llm-inference-lab/results/kv_cache_growth.csv).
-    *   **Theory Reference**: Initialize [docs/kv-cache.md](file:///c:/Projects/llm-inference-lab/docs/kv-cache.md) detailing sizing mathematics and allocation logic.
-    *   **Benchmark Report**: [benchmarks/25-06-2026-kv-cache-profiler.md](file:///c:/Projects/llm-inference-lab/benchmarks/25-06-2026-kv-cache-profiler.md) plotting the memory consumption profile of baseline Qwen models.
-    *   **Learning Report**: [learnings/learning-kv-cache-math.md](file:///c:/Projects/llm-inference-lab/learnings/learning-kv-cache-math.md) detailing the VRAM boundaries, allocations, and how bandwidth constraints emerge.
+    *   **Workload Database**: Save metrics to [results/kv_cache_growth.csv](../results/kv_cache_growth.csv).
+    *   **Theory Reference**: Initialize [docs/kv-cache.md](kv-cache.md) detailing sizing mathematics and allocation logic.
+    *   **Benchmark Report**: [benchmarks/25-06-2026-kv-cache-profiler.md](../benchmarks/25-06-2026-kv-cache-profiler.md) plotting the memory consumption profile of baseline Qwen models.
+    *   **Learning Report**: [learnings/learning-kv-cache-math.md](../learnings/learning-kv-cache-math.md) detailing the VRAM boundaries, allocations, and how bandwidth constraints emerge.
 
 ---
 
@@ -1079,8 +1079,8 @@ All generated deliverables are strictly routed to their designated directories:
     *   [Aleksa Gordić's "ELI5 FlashAttention" breakdown](https://gordicaleksa.medium.com/eli5-flash-attention-5c44017022ad)
     *   [FlashAttention Paper (Dao et al., 2022)](https://arxiv.org/abs/2205.14135)
 *   **Deliverables**:
-    *   **Theory Reference**: Initialize [docs/flash-attention.md](file:///c:/Projects/llm-inference-lab/docs/flash-attention.md) outlining fused kernels and SRAM tiles.
-    *   **Learning Report**: [learnings/learning-flashattention-memory-io.md](file:///c:/Projects/llm-inference-lab/learnings/learning-flashattention-memory-io.md) detailing hardware-level analyses of HBM transfers vs kernel processing.
+    *   **Theory Reference**: Initialize [docs/flash-attention.md](flash-attention.md) outlining fused kernels and SRAM tiles.
+    *   **Learning Report**: [learnings/learning-flashattention-memory-io.md](../learnings/learning-flashattention-memory-io.md) detailing hardware-level analyses of HBM transfers vs kernel processing.
 
 #### Weeks 10–12: Implement SnapKV and Benchmark It
 *   **Goal**: Build a custom PyTorch/Transformers hook that compresses the KV cache dynamically using SnapKV (clustering key-value pairs by attention scores) and evaluate its speed vs. perplexity trade-offs.
@@ -1093,9 +1093,9 @@ All generated deliverables are strictly routed to their designated directories:
 *   **Deliverables**:
     *   **Code**: Create `snapkv/hook.py` and `snapkv/eval.py`.
     *   **Workload Database**: Save sweeps to `results/snapkv_benchmark.csv`.
-    *   **Theory Reference**: Update [docs/kv-cache.md](file:///c:/Projects/llm-inference-lab/docs/kv-cache.md) adding attention pooling and compression algorithms.
-    *   **Benchmark Report**: [benchmarks/15-07-2026-snapkv-compression.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-07-2026-snapkv-compression.md) showing VRAM savings and quality (perplexity) parameters over sweeps.
-    *   **Learning Report**: [learnings/learning-snapkv-mechanics.md](file:///c:/Projects/llm-inference-lab/learnings/learning-snapkv-mechanics.md) covering hook insertions, key retention metrics, and consumer GPU execution efficiency.
+    *   **Theory Reference**: Update [docs/kv-cache.md](kv-cache.md) adding attention pooling and compression algorithms.
+    *   **Benchmark Report**: [benchmarks/15-07-2026-snapkv-compression.md](../benchmarks/15-07-2026-snapkv-compression.md) showing VRAM savings and quality (perplexity) parameters over sweeps.
+    *   **Learning Report**: [learnings/learning-snapkv-mechanics.md](../learnings/learning-snapkv-mechanics.md) covering hook insertions, key retention metrics, and consumer GPU execution efficiency.
 
 ---
 
@@ -1108,8 +1108,8 @@ All generated deliverables are strictly routed to their designated directories:
     *   [Lilian Weng's Speculative Decoding explanation](https://lilianweng.github.io/posts/2023-01-10-inference-optimization/)
     *   [Speculative Decoding Paper (Leviathan et al., 2023)](https://arxiv.org/abs/2211.17192)
 *   **Deliverables**:
-    *   **Theory Reference**: Initialize [docs/paged-attention.md](file:///c:/Projects/llm-inference-lab/docs/paged-attention.md) (block mapping layouts) and [docs/speculative-decoding.md](file:///c:/Projects/llm-inference-lab/docs/speculative-decoding.md) (acceptance criteria/draft networks).
-    *   **Learning Report**: [learnings/learning-speculative-decoding-constraints.md](file:///c:/Projects/llm-inference-lab/learnings/learning-speculative-decoding-constraints.md) highlighting VRAM capacity limits and latency tradeoffs during dual-model serving on consumer chips.
+    *   **Theory Reference**: Initialize [docs/paged-attention.md](paged-attention.md) (block mapping layouts) and [docs/speculative-decoding.md](speculative-decoding.md) (acceptance criteria/draft networks).
+    *   **Learning Report**: [learnings/learning-speculative-decoding-constraints.md](../learnings/learning-speculative-decoding-constraints.md) highlighting VRAM capacity limits and latency tradeoffs during dual-model serving on consumer chips.
 
 #### Weeks 15–16: Read llama.cpp Source & Measure Speculative Decoding
 *   **Goal**: Trace the inner inference loop and KV cache management in the `llama.cpp` codebase, and benchmark speculative decoding natively using a tiny draft model (e.g., Qwen2.5-1B) paired with the baseline model.
@@ -1117,8 +1117,8 @@ All generated deliverables are strictly routed to their designated directories:
     *   [llama.cpp sampling and execution loops](https://github.com/ggerganov/llama.cpp)
 *   **Deliverables**:
     *   **Workload Database**: Save raw runs to `results/speculative_decoding_benchmark.csv`.
-    *   **Theory Reference**: Update [docs/speculative-decoding.md](file:///c:/Projects/llm-inference-lab/docs/speculative-decoding.md) detailing native C++ speculative execution structures.
-    *   **Benchmark Report**: [benchmarks/15-08-2026-speculative-decoding.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-08-2026-speculative-decoding.md) documenting speedups and acceptance rates under dynamic hardware partitions.
+    *   **Theory Reference**: Update [docs/speculative-decoding.md](speculative-decoding.md) detailing native C++ speculative execution structures.
+    *   **Benchmark Report**: [benchmarks/15-08-2026-speculative-decoding.md](../benchmarks/15-08-2026-speculative-decoding.md) documenting speedups and acceptance rates under dynamic hardware partitions.
 
 ---
 
@@ -1129,13 +1129,13 @@ All generated deliverables are strictly routed to their designated directories:
 *   **Reference Materials**:
     *   arXiv search listings on low-VRAM LLM serving.
 *   **Deliverables**:
-    *   **Learning Report**: [learnings/learning-research-proposal.md](file:///c:/Projects/llm-inference-lab/learnings/learning-research-proposal.md) proposing the hypothesis, target hardware configurations, and planned pipeline designs.
+    *   **Learning Report**: [learnings/learning-research-proposal.md](../learnings/learning-research-proposal.md) proposing the hypothesis, target hardware configurations, and planned pipeline designs.
 
 #### Weeks 19–20: Rapid Prototyping & Initial Evaluation
 *   **Goal**: Build a minimal prototype of the proposed optimization within the local codebase and run rapid measurements to confirm if the latency/memory savings hold.
 *   **Deliverables**:
     *   **Code**: Create experimental scripts under a `prototype/` directory.
-    *   **Benchmark Report**: [benchmarks/15-09-2026-prototype-evaluation.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-09-2026-prototype-evaluation.md) documenting early evaluations, execution speed deltas, and failure adjustments.
+    *   **Benchmark Report**: [benchmarks/15-09-2026-prototype-evaluation.md](../benchmarks/15-09-2026-prototype-evaluation.md) documenting early evaluations, execution speed deltas, and failure adjustments.
 
 ---
 
@@ -1147,13 +1147,13 @@ All generated deliverables are strictly routed to their designated directories:
     *   [EleutherAI LM-Evaluation-Harness](https://github.com/EleutherAI/lm-evaluation-harness)
 *   **Deliverables**:
     *   **Code**: Populate production modules inside `src/`.
-    *   **Workload Database**: Save summary evaluations to [results/final_comparison.csv](file:///c:/Projects/llm-inference-lab/results/final_comparison.csv).
-    *   **Benchmark Report**: [benchmarks/15-10-2026-final-evaluation.md](file:///c:/Projects/llm-inference-lab/benchmarks/15-10-2026-final-evaluation.md) compiling overall latency, throughput, and accuracy tables.
+    *   **Workload Database**: Save summary evaluations to [results/final_comparison.csv](../results/final_comparison.csv).
+    *   **Benchmark Report**: [benchmarks/15-10-2026-final-evaluation.md](../benchmarks/15-10-2026-final-evaluation.md) compiling overall latency, throughput, and accuracy tables.
 
 #### Week 24: Write the Technical Report
 *   **Goal**: Document the entire 6-month study, the optimization mechanics, measured performance gains, trade-offs, and future directions.
 *   **Deliverables**:
-    *   **Learning Report**: [learnings/learning-final-technical-report.md](file:///c:/Projects/llm-inference-lab/learnings/learning-final-technical-report.md) serving as the comprehensive project publication and technical summary.
+    *   **Learning Report**: [learnings/learning-final-technical-report.md](../learnings/learning-final-technical-report.md) serving as the comprehensive project publication and technical summary.
 
 ---
 
@@ -1407,12 +1407,12 @@ Offloading all layers of Llama-3-8B Q4_K_M to the RTX 3050 Laptop is required to
 Evaluate the performance impact of GGUF quantization variants (Q2_K, Q3_K_L, Q4_K_M, and Q5_K_M) at full GPU offloading (`ngl = 32`) to find the optimal point between accuracy (perplexity) and throughput.
 
 ## Related Learnings
-*   [learnings/learning-pcie-bottleneck.md](file:///c:/Projects/llm-inference-lab/learnings/learning-pcie-bottleneck.md)
-*   [learnings/learning-single-vs-dual-channel-cpu.md](file:///c:/Projects/llm-inference-lab/learnings/learning-single-vs-dual-channel-cpu.md)
+*   [learnings/learning-pcie-bottleneck.md](../learnings/learning-pcie-bottleneck.md)
+*   [learnings/learning-single-vs-dual-channel-cpu.md](../learnings/learning-single-vs-dual-channel-cpu.md)
 
 ## Related Theory Documents
-*   [docs/gpu-memory-bandwidth.md](file:///c:/Projects/llm-inference-lab/docs/gpu-memory-bandwidth.md)
-*   [docs/quantization.md](file:///c:/Projects/llm-inference-lab/docs/quantization.md)
+*   [docs/gpu-memory-bandwidth.md](gpu-memory-bandwidth.md)
+*   [docs/quantization.md](quantization.md)
 
 ---
 
@@ -1492,7 +1492,7 @@ While a Benchmark Report answers **"What happened?"** (presenting data and stati
 # Learning: The Non-Linear Performance Threshold of Full GPU Offload
 
 ## Related Benchmark
-*   [benchmarks/bm-qwen2.5-7b-offload-scaling.md](file:///c:/Projects/llm-inference-lab/benchmarks/bm-qwen2.5-7b-offload-scaling.md)
+*   [benchmarks/bm-qwen2.5-7b-offload-scaling.md](../benchmarks/bm-qwen2.5-7b-offload-scaling.md)
 *   CSV Entry: `RunID: qwen2.5-7b-opt-run-102`
 
 ## Key Observation
@@ -1571,85 +1571,85 @@ To prevent duplication of general systems concepts across various Benchmark and 
 
 ### Core Architecture Files
 
-1.  **[transformer-basics.md](file:///c:/Projects/llm-inference-lab/docs/transformer-basics.md)**:
+1.  **[transformer-basics.md](transformer-basics.md)**:
     *   *Purpose*: Explains Multi-Head Attention mechanics, layer architectures, and embeddings.
     *   *Scope*: Transformer structure down to vector math.
     *   *When to create/update*: When changing baseline network definitions.
     *   *References*: Reference when profiling parameter footprints or attention calculation steps.
 
-2.  **[gpu-memory-bandwidth.md](file:///c:/Projects/llm-inference-lab/docs/gpu-memory-bandwidth.md)**:
+2.  **[gpu-memory-bandwidth.md](gpu-memory-bandwidth.md)**:
     *   *Purpose*: Details arithmetic intensity limits and memory bus rooflines.
     *   *Scope*: HBM/GDDR memory configurations, bus widths, and clock frequency limits.
     *   *When to create/update*: When analyzing decode constraints or comparing system limits.
     *   *References*: Reference when discussing tokens/sec barriers on specific cards.
 
-3.  **[kv-cache.md](file:///c:/Projects/llm-inference-lab/docs/kv-cache.md)**:
+3.  **[kv-cache.md](kv-cache.md)**:
     *   *Purpose*: Details KV cache allocation memory sizes and architectures.
     *   *Scope*: Sizing equations for Multi-Head Attention (MHA), Multi-Query Attention (MQA), and Grouped-Query Attention (GQA).
     *   *When to create/update*: When documenting context scaling limits.
     *   *References*: Reference when diagnosing VRAM-related Out-Of-Memory (OOM) crashes.
 
-4.  **[quantization.md](file:///c:/Projects/llm-inference-lab/docs/quantization.md)**:
+4.  **[quantization.md](quantization.md)**:
     *   *Purpose*: Explains mathematical precision reduction algorithms.
     *   *Scope*: Linear quantization math, scaling factors, and specific formats (AWQ, GPTQ, GGUF).
     *   *When to create/update*: When testing model throughput vs perplexity trade-offs.
     *   *References*: Reference when comparing different quantization types.
 
-5.  **[flash-attention.md](file:///c:/Projects/llm-inference-lab/docs/flash-attention.md)**:
+5.  **[flash-attention.md](flash-attention.md)**:
     *   *Purpose*: Documents SRAM tiling to optimize attention operations.
     *   *Scope*: Fused CUDA kernels, online softmax scaling, and write-back reduction.
     *   *When to create/update*: When analyzing prompt prefill times (TTFT) or long context windows.
     *   *References*: Reference when measuring attention computation times.
 
-6.  **[speculative-decoding.md](file:///c:/Projects/llm-inference-lab/docs/speculative-decoding.md)**:
+6.  **[speculative-decoding.md](speculative-decoding.md)**:
     *   *Purpose*: Details target verification scaling using lightweight draft models.
     *   *Scope*: Speculative drafting probability matrices and verification algorithms.
     *   *When to create/update*: When running multi-model decode acceleration configurations.
     *   *References*: Reference when measuring draft acceptance rates.
 
-7.  **[continuous-batching.md](file:///c:/Projects/llm-inference-lab/docs/continuous-batching.md)**:
+7.  **[continuous-batching.md](continuous-batching.md)**:
     *   *Purpose*: Explains dynamic iteration-level batch serving schedules.
     *   *Scope*: In-flight scheduling algorithms and padding elimination schemes.
     *   *When to create/update*: When testing concurrent API request scales.
     *   *References*: Reference when analyzing throughput vs. concurrency profiles.
 
-8.  **[paged-attention.md](file:///c:/Projects/llm-inference-lab/docs/paged-attention.md)**:
+8.  **[paged-attention.md](paged-attention.md)**:
     *   *Concept*: Virtual page translation mapping of KV cache blocks.
     *   *Scope*: Logical block structures and fragmentation elimination.
     *   *When to create/update*: When evaluating framework memory allocation pools.
     *   *References*: Reference when discussing memory fragmentation or batch allocation constraints.
 
-9.  **[tensor-parallelism.md](file:///c:/Projects/llm-inference-lab/docs/tensor-parallelism.md)**:
+9.  **[tensor-parallelism.md](tensor-parallelism.md)**:
     *   *Purpose*: Details intra-node model weight distribution.
     *   *Scope*: Row-parallel and column-parallel linear projection partitions and multi-GPU communication.
     *   *When to create/update*: When scaling benchmarks across multiple local or cloud GPUs.
     *   *References*: Reference when evaluating parallel communication overheads.
 
-10. **[pipeline-parallelism.md](file:///c:/Projects/llm-inference-lab/docs/pipeline-parallelism.md)**:
+10. **[pipeline-parallelism.md](pipeline-parallelism.md)**:
     *   *Purpose*: Documents layer partitioning across multiple server nodes.
     *   *Scope*: Pipeline scheduling models (e.g., 1F1B) and communication synchronization steps.
     *   *When to create/update*: When running large model distributed benchmarks.
     *   *References*: Reference when analyzing pipeline bubbles or inter-node transfer delays.
 
-11. **[inference-serving.md](file:///c:/Projects/llm-inference-lab/docs/inference-serving.md)**:
+11. **[inference-serving.md](inference-serving.md)**:
     *   *Purpose*: Documents production server routing and API gateways.
     *   *Scope*: Reverse proxy setups, queues, and SLA performance target distributions.
     *   *When to create/update*: When transitioning benchmarks from local scripts to server endpoints.
     *   *References*: Reference when comparing request latency distributions.
 
-12. **[cuda-fundamentals.md](file:///c:/Projects/llm-inference-lab/docs/cuda-fundamentals.md)**:
+12. **[cuda-fundamentals.md](cuda-fundamentals.md)**:
     *   *Purpose*: Explains core GPU software execution structures.
     *   *Scope*: Threads, warps, thread blocks, shared memory allocation, and grid configurations.
     *   *When to create/update*: When writing or debugging custom CUDA/Triton kernels.
     *   *References*: Reference when profiling kernel latency metrics.
 
-13. **[gpu-architecture.md](file:///c:/Projects/llm-inference-lab/docs/gpu-architecture.md)**:
+13. **[gpu-architecture.md](gpu-architecture.md)**:
     *   *Purpose*: Documents GPU hardware components.
     *   *Scope*: Streaming Multiprocessors, Tensor Cores, memory bus layout, and register files.
     *   *When to create/update*: When compiling profiles for specific hardware families (Hopper, Ada Lovelace, Ampere).
     *   *References*: Reference when discussing hardware limits (such as SM occupancy).
 
-14. **[benchmarking-methodology.md](file:///c:/Projects/llm-inference-lab/docs/benchmarking-methodology.md)**:
+14. **[benchmarking-methodology.md](benchmarking-methodology.md)**:
     *   *Purpose*: Establishes standard benchmarking protocols.
     *   *Scope*: Control of variables, thermal limits, statistical significance, and margin of error math.
     *   *When to create/update*: When designing new testing frameworks.
