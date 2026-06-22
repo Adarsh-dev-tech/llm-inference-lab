@@ -51,7 +51,7 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
 
 ## Month 2 — Transformer Internals & KV Cache Profiling
 
-### [ ] Week 5–6: Build a Tiny GPT
+### [x] Week 5–6: Build a Tiny GPT
 - **Deadline**: End of Week 6
 - **Step-by-Step Execution Details**:
   1. Follow Karpathy's "micrograd" tutorial to build backpropagation mechanics from scratch.
