@@ -70,7 +70,7 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
 
 ---
 
-### [ ] Week 7–8: Build a KV Cache Memory Profiler
+### [x] Week 7–8: Build a KV Cache Memory Profiler
 - **Deadline**: End of Week 8
 - **Step-by-Step Execution Details**:
   1. Create a Python script `kv_cache_profiler.py` using `llama-cpp-python`.
@@ -81,7 +81,7 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   - [Lilian Weng's Inference Optimization Post](https://lilianweng.github.io/posts/2023-01-10-inference-optimization/) — Sizing equations for Multi-Head Attention (MHA), Multi-Query Attention (MQA), and Grouped-Query Attention (GQA).
   - Hugging Face transformers model configuration files to extract Qwen2.5-7B dimension config ($n_{layers}=28$, $n_{heads}=28$, $d_{head}=128$).
 - **Expected Deliverables**:
-  - **Code**: Create `kv_cache_profiler.py`.
+  - **Code**: Create [kv_cache_profiler.py](../kv_cache_profiler.py).
   - **Workload Database**: Save metrics to [results/kv_cache_growth.csv](../results/kv_cache_growth.csv).
   - **Theory Reference**: Initialize [docs/kv-cache.md](kv-cache.md) detailing sizing mathematics and allocation logic.
   - **Benchmark Report**: [benchmarks/25-06-2026-kv-cache-profiler.md](../benchmarks/25-06-2026-kv-cache-profiler.md) plotting the memory consumption profile of baseline Qwen models.
