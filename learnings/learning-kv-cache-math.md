@@ -69,4 +69,4 @@ As context lengths scale to $32$K or $128$K tokens, even GQA KV caches will satu
 
 ## Related Documentation
 *   [Theory Reference: KV Cache Sizing and Memory Layouts](../docs/kv-cache.md)
-*   [Benchmark Report: KV Cache Memory Profile on Qwen models](../benchmarks/25-06-2026-kv-cache-profiler.md)
+*   [Benchmark Report: KV Cache Memory Profile on Qwen models](../benchmarks/23-06-2026-kv-cache-profiler.md)

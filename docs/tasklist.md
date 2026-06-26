@@ -84,14 +84,14 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   - **Code**: Create [kv_cache_profiler.py](../kv_cache_profiler.py).
   - **Workload Database**: Save metrics to [results/kv_cache_growth.csv](../results/kv_cache_growth.csv).
   - **Theory Reference**: Initialize [docs/kv-cache.md](kv-cache.md) detailing sizing mathematics and allocation logic.
-  - **Benchmark Report**: [benchmarks/25-06-2026-kv-cache-profiler.md](../benchmarks/25-06-2026-kv-cache-profiler.md) plotting the memory consumption profile of baseline Qwen models.
+  - **Benchmark Report**: [benchmarks/23-06-2026-kv-cache-profiler.md](../benchmarks/25-06-2026-kv-cache-profiler.md) plotting the memory consumption profile of baseline Qwen models.
   - **Learning Report**: [learnings/learning-kv-cache-math.md](../learnings/learning-kv-cache-math.md) detailing the VRAM boundaries, allocations, and how bandwidth constraints emerge.
 
 ---
 
 ## Month 3 — Paper Reading & SnapKV Implementation
 
-### [ ] Week 9: Learn How to Read a Paper & Study FlashAttention
+### [x] Week 9: Learn How to Read a Paper & Study FlashAttention
 - **Deadline**: End of Week 9
 - **Step-by-Step Execution Details**:
   1. Study S. Keshav's paper reading guidelines to structure paper analysis into three distinct passes.
@@ -100,17 +100,19 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
      - Pass 2: Analyze figures, algorithms, and key equations.
      - Pass 3: Review math details, memory layout constraints, and hardware-level tiling explanations.
   3. Document why standard PyTorch attention is bound by high-bandwidth memory (HBM) IO limitations rather than compute constraints.
+  4. Run a comparative benchmark sweep using `llama-cpp-python` with `flash_attn=True` vs. `flash_attn=False` across context lengths (512, 1024, 2048, 4096) to measure prompt prefill speedups (TPS) and VRAM activation spikes.
 - **Reference & Learning Materials**:
   - [S. Keshav's "How to Read a Paper"](http://ccr.sigcomm.org/online/files/p83-keshavA.pdf) — Three-pass methodology.
-  - [Aleksa Gordić's ELI5 FlashAttention](https://gordicaleksa.medium.com/eli5-flash-attention-5c44017022ad) — Simple visual and text breakdown.
+  - [Aleksa Gordic's ELI5 FlashAttention](https://gordicaleksa.medium.com/eli5-flash-attention-5c44017022ad) — Simple visual and text breakdown.
   - [FlashAttention Paper (Dao et al., 2022)](https://arxiv.org/abs/2205.14135) — PDF manuscript.
 - **Expected Deliverables**:
   - **Theory Reference**: Initialize [docs/flash-attention.md](flash-attention.md) outlining fused kernels and SRAM tiles.
+  - **Benchmark Report**: [benchmarks/25-06-2026-flash-attention-benchmark.md](../benchmarks/02-07-2026-flash-attention-benchmark.md) comparing prompt prefill latency and peak VRAM spikes with and without FlashAttention.
   - **Learning Report**: [learnings/learning-flashattention-memory-io.md](../learnings/learning-flashattention-memory-io.md) detailing hardware-level analyses of HBM transfers vs kernel processing.
 
 ---
 
-### [ ] Week 10–12: Implement SnapKV and Benchmark It
+### [x] Week 10–12: Implement SnapKV and Benchmark It
 - **Deadline**: End of Week 12
 - **Step-by-Step Execution Details**:
   1. Read the SnapKV paper to understand clustering and retention of key-value pairs using attention weights during prefill.
@@ -122,33 +124,35 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   - [SnapKV Paper (Li et al., 2024)](https://arxiv.org/abs/2404.14469) — Compression algorithm spec.
   - [SnapKV GitHub Repository](https://github.com/FasterDecoding/SnapKV) — Reference implementation.
 - **Expected Deliverables**:
-  - **Code**: Create `snapkv/hook.py` and `snapkv/eval.py`.
-  - **Workload Database**: Save sweeps to `results/snapkv_benchmark.csv`.
-  - **Theory Reference**: Update [docs/kv-cache.md](kv-cache.md) adding attention pooling and compression algorithms.
-  - **Benchmark Report**: [benchmarks/15-07-2026-snapkv-compression.md](../benchmarks/15-07-2026-snapkv-compression.md) showing VRAM savings and quality (perplexity) parameters over sweeps.
+  - **Code**: Create [snapkv/hook.py](../snapkv/hook.py) and [snapkv/snapkv_evaluator.py](../snapkv/snapkv_evaluator.py).
+  - **Workload Database**: Save sweeps to [results/snapkv_benchmark.csv](../results/snapkv_benchmark.csv).
+  - **Theory Reference**: Initialize [docs/snapkv.md](snapkv.md) adding attention pooling and compression algorithms.
+  - **Benchmark Report**: [benchmarks/26-06-2026-snapkv-compression.md](../benchmarks/26-06-2026-snapkv-compression.md) showing VRAM savings and quality (perplexity) parameters over sweeps.
   - **Learning Report**: [learnings/learning-snapkv-mechanics.md](../learnings/learning-snapkv-mechanics.md) covering hook insertions, key retention metrics, and consumer GPU execution efficiency.
 
 ---
 
 ## Month 4 — PagedAttention, Speculative Decoding & llama.cpp Tracing
 
-### [ ] Week 13–14: Read PagedAttention & Speculative Decoding
+### [x] Week 13–14: Read PagedAttention & Speculative Decoding
 - **Deadline**: End of Week 14
 - **Step-by-Step Execution Details**:
   1. Study virtual memory page allocations for KV cache blocks (PagedAttention) and speculative generation architectures.
   2. Analyze the papers using the Keshav 3-pass methodology.
   3. Document the specific constraints that consumer GPUs (6GB VRAM) face under these techniques (e.g. block size latency scaling, dual-model VRAM space competition).
+  4. Benchmark PagedAttention's prompt sharing mechanism using `llama-cpp-python`'s `cache_prompt=True` to compare sequential queries under shared-context conditions, logging VRAM savings and prefill execution latency.
 - **Reference & Learning Materials**:
   - [vLLM Blog Post on PagedAttention](https://blog.vllm.ai/2023/06/20/vllm.html) — Explaining logical blocks and page allocation grids.
   - [Speculative Decoding Paper (Leviathan et al., 2023)](https://arxiv.org/abs/2211.17192) — Core verification theorem.
   - [Lilian Weng's Speculative Decoding Guide](https://lilianweng.github.io/posts/2023-01-10-inference-optimization/) — Sizing target vs draft models.
 - **Expected Deliverables**:
-  - **Theory Reference**: Initialize [docs/paged-attention.md](paged-attention.md) (block mapping layouts) and [docs/speculative-decoding.md](speculative-decoding.md) (acceptance criteria/draft networks).
+  - **Theory Reference**: Consolidated into [docs/kv-cache.md](kv-cache.md) (block mapping layouts) and [docs/speculative-decoding.md](speculative-decoding.md) (acceptance criteria/draft networks).
+  - **Benchmark Report**: [benchmarks/27-06-2026-paged-attention-benchmark.md](../benchmarks/27-06-2026-paged-attention-benchmark.md) comparing VRAM footprint and prefill latency between Prompt Caching (Shared Pages) and Full Recomputation.
   - **Learning Report**: [learnings/learning-speculative-decoding-constraints.md](../learnings/learning-speculative-decoding-constraints.md) highlighting VRAM capacity limits and latency tradeoffs during dual-model serving on consumer chips.
 
 ---
 
-### [ ] Week 15–16: Read llama.cpp Source & Measure Speculative Decoding
+### [x] Week 15–16: Read llama.cpp Source & Measure Speculative Decoding
 - **Deadline**: End of Week 16
 - **Step-by-Step Execution Details**:
   1. Explore `ggerganov/llama.cpp` codebase. Trace the key-value buffer allocations and sampling loops.
@@ -156,11 +160,11 @@ This master task list tracks the execution of the 6-Month Project-First LLM Infe
   3. Benchmark speedups (TPS) and acceptance rates. Analyze if the draft model loading overhead degrades overall throughput on 6GB VRAM.
 - **Reference & Learning Materials**:
   - [llama.cpp Source Code](https://github.com/ggerganov/llama.cpp) — Trace `llama_decode` in `src/llama.cpp` and `common/common.cpp` CLI parameters (like `-md` draft paths).
-  - [Hugging Face Qwen2.5-1B-Instruct GGUF](https://huggingface.co/Qwen/Qwen2.5-1B-Instruct-GGUF) — Light draft weights.
+  - [Hugging Face Qwen2.5-1.5B-Instruct GGUF](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF) — Light draft weights.
 - **Expected Deliverables**:
-  - **Workload Database**: Save raw runs to `results/speculative_decoding_benchmark.csv`.
+  - **Workload Database**: Save raw runs to [results/speculative_decoding_benchmark.csv](../results/speculative_decoding_benchmark.csv).
   - **Theory Reference**: Update [docs/speculative-decoding.md](speculative-decoding.md) detailing native C++ speculative execution structures.
-  - **Benchmark Report**: [benchmarks/15-08-2026-speculative-decoding.md](../benchmarks/15-08-2026-speculative-decoding.md) documenting speedups and acceptance rates under dynamic hardware partitions.
+  - **Benchmark Report**: [benchmarks/28-06-2026-speculative-decoding.md](../benchmarks/28-06-2026-speculative-decoding.md) documenting speedups and acceptance rates under dynamic hardware partitions.
 
 ---
 

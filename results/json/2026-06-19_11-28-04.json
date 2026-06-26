@@ -1,0 +1,228 @@
+{
+  "framework_version": "1.0.0",
+  "run_id": "RUN-20260619-E1CD2F",
+  "timestamp": "2026-06-19T11:28:04",
+  "hardware": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-12450HX",
+    "ram_gb": 15.7,
+    "gpu": "NVIDIA GeForce RTX 3050 6GB Laptop GPU",
+    "vram_gb": 6.0
+  },
+  "model": {
+    "name": "qwen2.5-7b-instruct-q8_0-00001-of-00003",
+    "quantization": "Q8_0",
+    "model_path": "C:\\Users\\adars\\Downloads\\qwen2.5-7b-instruct-q8_0-00001-of-00003.gguf"
+  },
+  "configuration": {
+    "n_gpu_layers": 33,
+    "context_length": 4096,
+    "max_tokens": 2048,
+    "temperature": 0.7,
+    "repetition_penalty": 1.1,
+    "iterations": 3
+  },
+  "memory_load_summary": {
+    "ram_before_load_mb": 6240.34,
+    "ram_after_load_mb": 15304.53,
+    "process_ram_before_load_mb": 38.08,
+    "process_ram_after_load_mb": 9110.0,
+    "vram_before_load_mb": 142.0,
+    "vram_after_load_mb": 6110.53
+  },
+  "metrics_summary": {
+    "first_token_latency_ms": {
+      "mean": 431.85,
+      "stdev": 319.22,
+      "min": 246.94,
+      "max": 800.46,
+      "median": 248.16,
+      "p95": 800.46
+    },
+    "total_generation_time_ms": {
+      "mean": 283444.84,
+      "stdev": 85019.93,
+      "min": 207300.84,
+      "max": 375182.07,
+      "median": 267851.61,
+      "p95": 375182.07
+    },
+    "total_request_latency_ms": {
+      "mean": 286806.34,
+      "stdev": 86221.0,
+      "min": 209218.96,
+      "max": 379629.74,
+      "median": 271570.31,
+      "p95": 379629.74
+    },
+    "avg_itl_ms": {
+      "mean": 262.28,
+      "stdev": 6.73,
+      "min": 255.93,
+      "max": 269.33,
+      "median": 261.57,
+      "p95": 269.33
+    },
+    "prompt_tps": {
+      "mean": 202.19,
+      "stdev": 104.6,
+      "min": 81.41,
+      "max": 263.22,
+      "median": 261.93,
+      "p95": 263.22
+    },
+    "generation_tps": {
+      "mean": 3.81,
+      "stdev": 0.1,
+      "min": 3.71,
+      "max": 3.91,
+      "median": 3.82,
+      "p95": 3.91
+    }
+  },
+  "hardware_summary": {
+    "cpu_utilization_summary": {
+      "mean": 29.69,
+      "stdev": 0.63
+    },
+    "gpu_utilization_summary": {
+      "mean": 98.49,
+      "stdev": 0.1
+    },
+    "gpu_mem_utilization_summary": {
+      "mean": 18.31,
+      "stdev": 0.78
+    },
+    "gpu_temperature_c_summary": {
+      "mean": 66.95,
+      "stdev": 0.08
+    },
+    "gpu_power_watts_summary": {
+      "mean": 33.38,
+      "stdev": 0.13
+    },
+    "gpu_graphics_clock_mhz_summary": {
+      "mean": 1942.24,
+      "stdev": 0.42
+    },
+    "gpu_memory_clock_mhz_summary": {
+      "mean": 7001.0,
+      "stdev": 0.0
+    }
+  },
+  "runs": [
+    {
+      "run_id": "RUN-20260619-E1CD2F",
+      "iteration_index": 1,
+      "timestamp": "2026-06-19T11:32:48",
+      "model": "qwen2.5-7b-instruct-q8_0-00001-of-00003",
+      "quantization": "Q8_0",
+      "model_path": "C:\\Users\\adars\\Downloads\\qwen2.5-7b-instruct-q8_0-00001-of-00003.gguf",
+      "n_gpu_layers": 33,
+      "context_length": 4096,
+      "max_tokens": 2048,
+      "temperature": 0.7,
+      "repetition_penalty": 1.1,
+      "prompt_tokens": 65,
+      "generated_tokens": 1024,
+      "prompt_tps": 81.41,
+      "generation_tps": 3.82,
+      "first_token_latency_ms": 800.46,
+      "total_generation_time_ms": 267851.609,
+      "total_request_latency_ms": 271570.31,
+      "avg_itl_ms": 261.57,
+      "ram_before_mb": 15272.48,
+      "ram_after_mb": 15136.05,
+      "process_ram_before_mb": 9441.55,
+      "process_ram_after_mb": 8468.3,
+      "vram_before_mb": 6072.53,
+      "vram_after_mb": 6088.53,
+      "cpu_utilization": 30.38,
+      "gpu_utilization": 98.5,
+      "gpu_mem_utilization": 19.13,
+      "gpu_temperature_c": 66.93,
+      "gpu_power_watts": 33.37,
+      "gpu_graphics_clock_mhz": 1942.72,
+      "gpu_memory_clock_mhz": 7001.0,
+      "ram_before_load_mb": 6240.34,
+      "ram_after_load_mb": 15304.53,
+      "vram_before_load_mb": 142.0,
+      "vram_after_load_mb": 6110.53
+    },
+    {
+      "run_id": "RUN-20260619-E1CD2F",
+      "iteration_index": 2,
+      "timestamp": "2026-06-19T11:39:08",
+      "model": "qwen2.5-7b-instruct-q8_0-00001-of-00003",
+      "quantization": "Q8_0",
+      "model_path": "C:\\Users\\adars\\Downloads\\qwen2.5-7b-instruct-q8_0-00001-of-00003.gguf",
+      "n_gpu_layers": 33,
+      "context_length": 4096,
+      "max_tokens": 2048,
+      "temperature": 0.7,
+      "repetition_penalty": 1.1,
+      "prompt_tokens": 65,
+      "generated_tokens": 1393,
+      "prompt_tps": 261.93,
+      "generation_tps": 3.71,
+      "first_token_latency_ms": 248.16,
+      "total_generation_time_ms": 375182.065,
+      "total_request_latency_ms": 379629.74,
+      "avg_itl_ms": 269.33,
+      "ram_before_mb": 15141.68,
+      "ram_after_mb": 14979.7,
+      "process_ram_before_mb": 8474.73,
+      "process_ram_after_mb": 8180.64,
+      "vram_before_mb": 6088.53,
+      "vram_after_mb": 6088.53,
+      "cpu_utilization": 29.55,
+      "gpu_utilization": 98.39,
+      "gpu_mem_utilization": 17.57,
+      "gpu_temperature_c": 66.88,
+      "gpu_power_watts": 33.25,
+      "gpu_graphics_clock_mhz": 1942.0,
+      "gpu_memory_clock_mhz": 7001.0,
+      "ram_before_load_mb": 6240.34,
+      "ram_after_load_mb": 15304.53,
+      "vram_before_load_mb": 142.0,
+      "vram_after_load_mb": 6110.53
+    },
+    {
+      "run_id": "RUN-20260619-E1CD2F",
+      "iteration_index": 3,
+      "timestamp": "2026-06-19T11:42:37",
+      "model": "qwen2.5-7b-instruct-q8_0-00001-of-00003",
+      "quantization": "Q8_0",
+      "model_path": "C:\\Users\\adars\\Downloads\\qwen2.5-7b-instruct-q8_0-00001-of-00003.gguf",
+      "n_gpu_layers": 33,
+      "context_length": 4096,
+      "max_tokens": 2048,
+      "temperature": 0.7,
+      "repetition_penalty": 1.1,
+      "prompt_tokens": 65,
+      "generated_tokens": 810,
+      "prompt_tps": 263.22,
+      "generation_tps": 3.91,
+      "first_token_latency_ms": 246.94,
+      "total_generation_time_ms": 207300.839,
+      "total_request_latency_ms": 209218.96,
+      "avg_itl_ms": 255.93,
+      "ram_before_mb": 14975.31,
+      "ram_after_mb": 15104.92,
+      "process_ram_before_mb": 8183.84,
+      "process_ram_after_mb": 8186.61,
+      "vram_before_mb": 6088.53,
+      "vram_after_mb": 6088.53,
+      "cpu_utilization": 29.15,
+      "gpu_utilization": 98.59,
+      "gpu_mem_utilization": 18.22,
+      "gpu_temperature_c": 67.03,
+      "gpu_power_watts": 33.51,
+      "gpu_graphics_clock_mhz": 1942.0,
+      "gpu_memory_clock_mhz": 7001.0,
+      "ram_before_load_mb": 6240.34,
+      "ram_after_load_mb": 15304.53,
+      "vram_before_load_mb": 142.0,
+      "vram_after_load_mb": 6110.53
+    }
+  ]
+}

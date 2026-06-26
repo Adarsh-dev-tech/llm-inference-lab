@@ -101,6 +101,81 @@ Where $T_{\text{max}}$ is the maximum context length (`n_ctx`). For Qwen2.5-7B w
 
 ---
 
+## 5. PagedAttention Memory Address Mapping and Scheduling
+
+To resolve the fragmentation and static allocation issues of `llama.cpp`'s default behavior, modern serving frameworks (such as `vLLM`) use **PagedAttention**. This mechanism separates the logical sequence from physical VRAM by mimicking the page table architecture of operating system virtual memory.
+
+### Logical vs. Physical Mapping
+*   **Logical Blocks**: The KV cache for a sequence is represented as a contiguous stream of tokens divided into blocks of size $B_{\text{size}}$ (typically $16$ tokens per block).
+*   **Physical Blocks**: Contiguous chunks of VRAM pre-allocated globally. These blocks do not need to be contiguous in physical memory.
+*   **Page Table**: A lookup registry that dynamically maps the logical block index to its physical block location during inference.
+
+### Page Address Mapping Scheduler Grid (ASCII)
+
+Here is how PagedAttention maps two parallel sequence prompts that share the same initial system prompt (32 tokens) but diverge during generation:
+
+```
+=== LOGICAL SEQUENCE ADDRESS STACKS ===
+
+Sequence 1 (Context: System Prompt [32 tokens] + "A...")
+  Logical Blocks:  [ LBN 0 (0-15) ] -> [ LBN 1 (16-31) ] -> [ LBN 2 (32-47) ]
+  
+Sequence 2 (Context: System Prompt [32 tokens] + "B...")
+  Logical Blocks:  [ LBN 0 (0-15) ] -> [ LBN 1 (16-31) ] -> [ LBN 2 (32-47) ]
+
+
+=== PAGE TABLE MAPS ===
+
+Sequence 1 Page Table:
+  +----------------------+-----------------------+
+  | Logical Block Number | Physical Block Number |
+  +----------------------+-----------------------+
+  |        LBN 0         |        PBN 102        |  <-- Shared System Prompt Block 1
+  |        LBN 1         |        PBN 103        |  <-- Shared System Prompt Block 2
+  |        LBN 2 (Seq 1) |        PBN 501        |  <-- Unique Sequence 1 Generation
+  +----------------------+-----------------------+
+
+Sequence 2 Page Table:
+  +----------------------+-----------------------+
+  | Logical Block Number | Physical Block Number |
+  +----------------------+-----------------------+
+  |        LBN 0         |        PBN 102        |  <-- Shared System Prompt Block 1
+  |        LBN 1         |        PBN 103        |  <-- Shared System Prompt Block 2
+  |        LBN 2 (Seq 2) |        PBN 742        |  <-- Unique Sequence 2 Generation
+  +----------------------+-----------------------+
+
+
+=== PHYSICAL VRAM BLOCK ALLOCATION GRID ===
+
+  Physical Block Registry (VRAM memory pool):
+  +-----------------------------------------------------------------+
+  | ...                                                             |
+  | Block 102 (PBN 102) -> [Keys & Values for Tokens 0 - 15]        | <-- Seq 1 & 2 Read-Only
+  | Block 103 (PBN 103) -> [Keys & Values for Tokens 16 - 31]       | <-- Seq 1 & 2 Read-Only
+  | ...                                                             |
+  | Block 501 (PBN 501) -> [Keys & Values for Seq 1 Tokens 32 - 47] | <-- Seq 1 Private Write
+  | ...                                                             |
+  | Block 742 (PBN 742) -> [Keys & Values for Seq 2 Tokens 32 - 47] | <-- Seq 2 Private Write
+  | ...                                                             |
+  +-----------------------------------------------------------------+
+```
+
+### The Copy-on-Write (CoW) Scheduling Logic
+1.  **Shared Prefixes**: When both Sequence 1 and Sequence 2 are initialized, the scheduler assigns them the same physical blocks (`PBN 102` and `PBN 103`) containing the pre-evaluated system prompt. VRAM usage for the prompt is cut exactly in half because only one copy is stored physically.
+2.  **Divergent Paths**: The moment Sequence 1 generates its next token at logical index 32, it requires writing new keys and values. Since `PBN 103` is marked as shared (ref count > 1), the scheduler allocates a new physical block (`PBN 501`) exclusively for Sequence 1. 
+3.  **Physical Offset Computation**:
+    When a GPU thread needs to retrieve the key vector $K_{t}$ for token index $t=35$:
+    *   **Block Index**: $t / B_{\text{size}} = 35 / 16 = \mathbf{2}$ (Logical Block $2$).
+    *   **Block Offset**: $t \pmod{B_{\text{size}}} = 35 \pmod{16} = \mathbf{3}$ (Slot $3$ within the block).
+    *   **Physical Lookup**: Query the Page Table for Logical Block $2 \rightarrow$ returns `PBN 501`.
+    *   **Memory Fetch**: Fetch vector at address:
+        $$\text{Address} = \text{BaseAddress}(\text{PBN } 501) + (3 \times D \times \text{BPE})$$
+        Where $D$ is the head dimension and $\text{BPE}$ is the bytes per element.
+
+---
+
 ## Related Documentation
 *   [Theory Reference: Transformer Architectures and Self-Attention Mechanics](transformer-basics.md)
-*   [Benchmark Report: KV Cache Memory Profile on Qwen models](../benchmarks/25-06-2026-kv-cache-profiler.md)
+*   [Theory Reference: FlashAttention Fused Kernels and SRAM Tiling](flash-attention.md)
+*   [Theory Reference: SnapKV Compression and Attention Sparsity](snapkv.md)
+*   [Benchmark Report: KV Cache Memory Profile on Qwen models](../benchmarks/23-06-2026-kv-cache-profiler.md)

@@ -20,6 +20,3 @@ env/
 *.gguf
 *.bin
 
-# Local benchmark logs and artifacts (keep codebase clean)
-results/json/*.json
-!results/json/README.md

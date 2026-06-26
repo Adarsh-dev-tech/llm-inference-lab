@@ -1,0 +1,102 @@
+[
+    {
+        "model": "Qwen2.5-7B-Instruct",
+        "bits": 4,
+        "k": 16,
+        "obs_window": 32,
+        "recent_window": 32,
+        "perplexity": 10.879,
+        "loaded_vram_mb": 5302.28,
+        "peak_vram_mb": 5626.63
+    },
+    {
+        "model": "Qwen2.5-7B-Instruct",
+        "bits": 4,
+        "k": 32,
+        "obs_window": 32,
+        "recent_window": 32,
+        "perplexity": 31.3737,
+        "loaded_vram_mb": 5302.28,
+        "peak_vram_mb": 5627.5
+    },
+    {
+        "model": "Qwen2.5-7B-Instruct",
+        "bits": 4,
+        "k": 64,
+        "obs_window": 32,
+        "recent_window": 32,
+        "perplexity": 19.3917,
+        "loaded_vram_mb": 5302.28,
+        "peak_vram_mb": 5629.25
+    },
+    {
+        "model": "Qwen2.5-7B-Instruct",
+        "bits": 4,
+        "k": 128,
+        "obs_window": 32,
+        "recent_window": 32,
+        "perplexity": 23.1351,
+        "loaded_vram_mb": 5302.28,
+        "peak_vram_mb": 5632.75
+    },
+    {
+        "model": "Qwen2.5-7B-Instruct",
+        "bits": 4,
+        "k": 256,
+        "obs_window": 32,
+        "recent_window": 32,
+        "perplexity": 216.795,
+        "loaded_vram_mb": 5302.28,
+        "peak_vram_mb": 5638.71
+    },
+    {
+        "model": "Qwen2.5-7B-Instruct",
+        "bits": 8,
+        "k": 16,
+        "obs_window": 32,
+        "recent_window": 32,
+        "perplexity": 27.5446,
+        "loaded_vram_mb": 3050.91,
+        "peak_vram_mb": 8469.21
+    },
+    {
+        "model": "Qwen2.5-7B-Instruct",
+        "bits": 8,
+        "k": 32,
+        "obs_window": 32,
+        "recent_window": 32,
+        "perplexity": 19.0737,
+        "loaded_vram_mb": 3050.91,
+        "peak_vram_mb": 8470.09
+    },
+    {
+        "model": "Qwen2.5-7B-Instruct",
+        "bits": 8,
+        "k": 64,
+        "obs_window": 32,
+        "recent_window": 32,
+        "perplexity": 110.655,
+        "loaded_vram_mb": 3050.91,
+        "peak_vram_mb": 8472.69
+    },
+    {
+        "model": "Qwen2.5-7B-Instruct",
+        "bits": 8,
+        "k": 128,
+        "obs_window": 32,
+        "recent_window": 32,
+        "perplexity": 15.7006,
+        "loaded_vram_mb": 3050.91,
+        "peak_vram_mb": 8476.14
+    },
+    {
+        "model": "Qwen2.5-7B-Instruct",
+        "bits": 8,
+        "k": 256,
+        "obs_window": 32,
+        "recent_window": 32,
+        "perplexity": 144.6868,
+        "loaded_vram_mb": 3050.91,
+        "peak_vram_mb": 8482.42
+    }
+]

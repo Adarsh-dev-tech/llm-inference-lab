@@ -1,0 +1,90 @@
+[
+    {
+        "target_quant": "Q4_K_M",
+        "target_ngl": 33,
+        "speculative_enabled": false,
+        "prompt_tps": 421.9,
+        "generation_tps": 34.3,
+        "acceptance_rate": null,
+        "peak_vram_mb": 4561.38,
+        "load_time_sec": 8.339,
+        "total_run_time_sec": 8.34
+    },
+    {
+        "target_quant": "Q4_K_M",
+        "target_ngl": 33,
+        "speculative_enabled": true,
+        "prompt_tps": 298.5,
+        "generation_tps": 26.7,
+        "acceptance_rate": 0.5,
+        "peak_vram_mb": 5619.7,
+        "load_time_sec": 9.361,
+        "total_run_time_sec": 9.36
+    },
+    {
+        "target_quant": "Q5_K_M",
+        "target_ngl": 33,
+        "speculative_enabled": false,
+        "prompt_tps": 40.9,
+        "generation_tps": 22.8,
+        "acceptance_rate": null,
+        "peak_vram_mb": 5222.82,
+        "load_time_sec": 14.345,
+        "total_run_time_sec": 14.34
+    },
+    {
+        "target_quant": "Q5_K_M",
+        "target_ngl": 33,
+        "speculative_enabled": true,
+        "prompt_tps": 0.0,
+        "generation_tps": 0.0,
+        "acceptance_rate": null,
+        "peak_vram_mb": 5219.82,
+        "load_time_sec": 9.055,
+        "total_run_time_sec": 9.05
+    },
+    {
+        "target_quant": "Q8_0",
+        "target_ngl": 33,
+        "speculative_enabled": false,
+        "prompt_tps": 0.0,
+        "generation_tps": 0.0,
+        "acceptance_rate": null,
+        "peak_vram_mb": 5117.2,
+        "load_time_sec": 10.126,
+        "total_run_time_sec": 10.13
+    },
+    {
+        "target_quant": "Q8_0",
+        "target_ngl": 33,
+        "speculative_enabled": true,
+        "prompt_tps": 0.0,
+        "generation_tps": 0.0,
+        "acceptance_rate": null,
+        "peak_vram_mb": 5117.2,
+        "load_time_sec": 5.765,
+        "total_run_time_sec": 5.76
+    },
+    {
+        "target_quant": "Q8_0",
+        "target_ngl": 15,
+        "speculative_enabled": false,
+        "prompt_tps": 22.7,
+        "generation_tps": 9.6,
+        "acceptance_rate": null,
+        "peak_vram_mb": 4252.13,
+        "load_time_sec": 14.126,
+        "total_run_time_sec": 14.13
+    },
+    {
+        "target_quant": "Q8_0",
+        "target_ngl": 15,
+        "speculative_enabled": true,
+        "prompt_tps": 71.8,
+        "generation_tps": 9.4,
+        "acceptance_rate": 0.52381,
+        "peak_vram_mb": 5309.2,
+        "load_time_sec": 16.03,
+        "total_run_time_sec": 16.03
+    }
+]

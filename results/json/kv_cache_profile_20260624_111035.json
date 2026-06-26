@@ -1,0 +1,50 @@
+[
+    {
+        "quant": "Q4_K_M",
+        "ctx": 128,
+        "ngl": 33,
+        "theoretical_kv_mb": 7.0,
+        "experimental_kv_mb": 70.0,
+        "prefill_peak": 4510.53,
+        "prefill_spike": 28.0,
+        "prefill_time": 0.273,
+        "decode_time": 0.0318,
+        "is_paging": "No"
+    },
+    {
+        "quant": "Q5_K_M",
+        "ctx": 128,
+        "ngl": 33,
+        "theoretical_kv_mb": 7.0,
+        "experimental_kv_mb": 70.0,
+        "prefill_peak": 5170.53,
+        "prefill_spike": 28.0,
+        "prefill_time": 0.246,
+        "decode_time": 0.0337,
+        "is_paging": "No"
+    },
+    {
+        "quant": "Q8_0",
+        "ctx": 128,
+        "ngl": 33,
+        "theoretical_kv_mb": 7.0,
+        "experimental_kv_mb": 0.0,
+        "prefill_peak": 6096.53,
+        "prefill_spike": 0.0,
+        "prefill_time": 0.2494,
+        "decode_time": 0.278,
+        "is_paging": "Yes"
+    },
+    {
+        "quant": "Q8_0",
+        "ctx": 128,
+        "ngl": 15,
+        "theoretical_kv_mb": 7.0,
+        "experimental_kv_mb": 88.0,
+        "prefill_peak": 4210.53,
+        "prefill_spike": 26.0,
+        "prefill_time": 0.5737,
+        "decode_time": 0.1126,
+        "is_paging": "No"
+    }
+]
