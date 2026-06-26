@@ -62,8 +62,11 @@ def evaluate_perplexity(model, tokenizer, text: str, k: int, obs_window: int, re
     target_ids = input_ids[:, prompt_len:total_len]
     
     # 1. Prefill stage: feed prompt to establish the compressed KV Cache
-    # We patch the model with the active SnapKV configurations
-    patch_snapkv(model, k=k, obs_window=obs_window, recent_window=recent_window)
+    # We patch the model with the active SnapKV configurations (or restore baseline if k == -1)
+    if k == -1:
+        patch_snapkv(model, disable_snapkv=True)
+    else:
+        patch_snapkv(model, k=k, obs_window=obs_window, recent_window=recent_window)
     
     # Prefill position IDs: [0, 1, ..., prompt_len-1]
     prefill_pos = torch.arange(prompt_len, device=model.device).unsqueeze(0)
@@ -102,6 +105,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default="Qwen/Qwen2.5-7B-Instruct", help="Hugging Face model ID or path")
     parser.add_argument("--wikitext", type=str, default=None, help="Optional path to a Wikitext file")
+    parser.add_argument("--no-snapkv", action="store_true", help="Run only the baseline perplexity evaluation without SnapKV compression")
     args = parser.parse_args()
     
     # Resolve GPU availability
@@ -142,7 +146,10 @@ def main():
     
     # Parameters for the sweep
     precisions = [4, 8]  # bits: 4-bit NF4, 8-bit Int8
-    k_configs = [16, 32, 64, 128, 256]
+    if args.no_snapkv:
+        k_configs = [-1]
+    else:
+        k_configs = [-1, 16, 32, 64, 128, 256]
     obs_window = 32
     recent_window = 32
     
@@ -195,7 +202,10 @@ def main():
         loaded_vram = get_vram_usage_mb()
         
         for k in k_configs:
-            print(f"    Running SnapKV sweep with K={k}...")
+            if k == -1:
+                print("    Running baseline perplexity evaluation (SnapKV disabled)...")
+            else:
+                print(f"    Running SnapKV sweep with K={k}...")
             
             # Reset CUDA memory profiling
             if torch.cuda.is_available():
@@ -227,7 +237,7 @@ def main():
                 # Log metrics
                 csv_row = [
                     timestamp_str, os.path.basename(args.model), bits, k,
-                    obs_window, recent_window, round(ppl, 4),
+                    obs_window if k != -1 else 0, recent_window if k != -1 else 0, round(ppl, 4),
                     round(loaded_vram, 2), round(peak_vram, 2)
                 ]
                 csv_writer.writerow(csv_row)
@@ -237,8 +247,8 @@ def main():
                     "model": os.path.basename(args.model),
                     "bits": bits,
                     "k": k,
-                    "obs_window": obs_window,
-                    "recent_window": recent_window,
+                    "obs_window": obs_window if k != -1 else 0,
+                    "recent_window": recent_window if k != -1 else 0,
                     "perplexity": round(ppl, 4),
                     "loaded_vram_mb": round(loaded_vram, 2),
                     "peak_vram_mb": round(peak_vram, 2)
@@ -274,7 +284,8 @@ def main():
     print(f"  JSON Artifact: {json_path}")
     print("-" * 75)
     for run in all_runs_data:
-        print(f"Bits: {run['bits']} | K: {run['k']:3d} | PPL: {run['perplexity']:9.4f} | Loaded VRAM: {run['loaded_vram_mb']:7.2f} MB | Peak VRAM: {run['peak_vram_mb']:7.2f} MB")
+        k_str = "Baseline" if run['k'] == -1 else f"K={run['k']}"
+        print(f"Bits: {run['bits']} | SnapKV: {k_str:<10s} | PPL: {run['perplexity']:9.4f} | Loaded VRAM: {run['loaded_vram_mb']:7.2f} MB | Peak VRAM: {run['peak_vram_mb']:7.2f} MB")
     print("=" * 75)
 
 if __name__ == "__main__":

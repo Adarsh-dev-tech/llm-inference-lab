@@ -32,13 +32,13 @@ The following table presents the actual perplexity (PPL) and memory tracking met
 
 | Quantization (Bits) | Retention Limit ($K$) | Observation Window ($L_{\text{obs}}$) | Recent Window ($L_{\text{rec}}$) | Perplexity (PPL) | KV Cache Tokens (Prefill) | Peak VRAM / Cache Size |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **8-bit Baseline** | *No SnapKV* | - | - | **5.0936** | 512 / 512 | ~8,469 MB |
+| **8-bit Baseline** | *No SnapKV* | - | - | **5.0936** | 512 / 512 | 8,494.87 MB |
 | **8-bit** | 256 | 32 | 32 | **4.7958** | 288 / 512 | 8,481.87 MB |
 | **8-bit** | 128 | 32 | 32 | **4.8930** | 160 / 512 | 8,474.87 MB |
 | **8-bit** | 64 | 32 | 32 | **4.7316** | 96 / 512 | 8,471.37 MB |
 | **8-bit** | 32 | 32 | 32 | **4.7672** | 64 / 512 | 8,469.62 MB |
 | **8-bit** | 16 | 32 | 32 | **4.8566** | 48 / 512 | 8,469.49 MB |
-| **4-bit Baseline** | *No SnapKV* | - | - | **5.4885** | 512 / 512 | ~5,626 MB |
+| **4-bit Baseline** | *No SnapKV* | - | - | **5.4885** | 512 / 512 | 5,665.50 MB |
 | **4-bit** | 256 | 32 | 32 | **5.3766** | 288 / 512 | 5,639.75 MB |
 | **4-bit** | 128 | 32 | 32 | **5.3787** | 160 / 512 | 5,632.75 MB |
 | **4-bit** | 64 | 32 | 32 | **5.5049** | 96 / 512 | 5,629.25 MB |

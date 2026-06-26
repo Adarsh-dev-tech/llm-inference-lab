@@ -1,0 +1,22 @@
+[
+    {
+        "model": "Qwen2.5-7B-Instruct",
+        "bits": 4,
+        "k": -1,
+        "obs_window": 0,
+        "recent_window": 0,
+        "perplexity": 5.4885,
+        "loaded_vram_mb": 5302.28,
+        "peak_vram_mb": 5665.5
+    },
+    {
+        "model": "Qwen2.5-7B-Instruct",
+        "bits": 8,
+        "k": -1,
+        "obs_window": 0,
+        "recent_window": 0,
+        "perplexity": 5.0936,
+        "loaded_vram_mb": 3050.91,
+        "peak_vram_mb": 8494.87
+    }
+]

@@ -106,18 +106,25 @@ def snapkv_forward(
     return attn_output, None
 
 
-def patch_snapkv(model: nn.Module, k: int = 64, obs_window: int = 32, recent_window: int = 32):
+def patch_snapkv(model: nn.Module, k: int = 64, obs_window: int = 32, recent_window: int = 32, disable_snapkv: bool = False):
     """
-    Traverses the model and patches all instances of Qwen2Attention with SnapKV custom forward methods.
+    Traverses the model and patches or restores all instances of Qwen2Attention.
     """
     for name, module in model.named_modules():
         if isinstance(module, Qwen2Attention):
-            # Bind hyperparameters directly to the module instance
-            module.snapkv_k = k
-            module.snapkv_obs_window = obs_window
-            module.snapkv_recent_window = recent_window
-            
-            # Monkey-patch the forward method
-            # Use __get__ to bind the custom function to the module instance as a method
-            module.forward = snapkv_forward.__get__(module, Qwen2Attention)
+            # Save the original forward method if not already saved
+            if not hasattr(module, "_original_forward"):
+                module._original_forward = module.forward
+                
+            if disable_snapkv:
+                # Restore original forward method
+                module.forward = module._original_forward
+            else:
+                # Bind hyperparameters directly to the module instance
+                module.snapkv_k = k
+                module.snapkv_obs_window = obs_window
+                module.snapkv_recent_window = recent_window
+                
+                # Monkey-patch the forward method
+                module.forward = snapkv_forward.__get__(module, Qwen2Attention)
 
